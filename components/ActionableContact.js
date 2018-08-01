@@ -6,8 +6,8 @@ export default class ActionableContact extends Component {
         return (
             <View style={styles.singleRow}>
                 <Text>{this.props.name}</Text>
-                <Button title="Call" onPress={() => console.log("Call " + this.props.name)} />
-                <Button title="Text" onPress={() => console.log("Text " + this.props.name)} />
+                <Button title="Call" onPress={() => console.log("Call " + this.props.name + "(" + this.props.number + ")")} />
+                <Button title="Text" onPress={() => console.log("Text " + this.props.name + "(" + this.props.number + ")")} />
             </View>
         )
     }

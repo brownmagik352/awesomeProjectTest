@@ -52,7 +52,7 @@ export default class Reminders extends Component {
 
     // TODO: handle getting name in all cases (names missing etc.)
     static getNumber(contact) {
-        contact.phoneNumbers[0].number
+        return contact.phoneNumbers[0].number
     }
 
     render() {
@@ -60,7 +60,7 @@ export default class Reminders extends Component {
             <View style={styles.container}>
                 <FlatList
                     data = {this.state.chosen}
-                    renderItem={({item}) => <ActionableContact name={item.name} />}
+                    renderItem={({item}) => <ActionableContact name={item.name} number={item.number} />}
                     ListEmptyComponent={<Text>No Reminders Set</Text>}
                     keyExtractor={(item, index) => index.toString()}
                 />
@@ -71,7 +71,7 @@ export default class Reminders extends Component {
                     <FlatList
                     data={this.state.contacts}
                     renderItem={({item}) => <ContactListItem 
-                                                name= { Reminders.getName(item) } 
+                                                name= {Reminders.getName(item)} 
                                                 onPress={() => this.handlePress({
                                                     name: Reminders.getName(item),
                                                     number: Reminders.getNumber(item)
