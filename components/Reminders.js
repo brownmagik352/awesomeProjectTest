@@ -31,9 +31,9 @@ export default class Reminders extends Component {
         })
     }
 
-    handlePress(name) {
+    handlePress(contact) {
         const chosenNames = this.state.chosen.slice();
-        chosenNames.push(name);
+        chosenNames.push(contact);
         this.setState({chosen: chosenNames});
     }
 
@@ -45,12 +45,22 @@ export default class Reminders extends Component {
         }
     }
 
+    // TODO: handle getting name in all cases (names missing etc.)
+    static getName(contact) {
+        return contact.givenName + " " + contact.familyName
+    }
+
+    // TODO: handle getting name in all cases (names missing etc.)
+    static getNumber(contact) {
+        contact.phoneNumbers[0].number
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <FlatList
                     data = {this.state.chosen}
-                    renderItem={({item}) => <ActionableContact name={item} />}
+                    renderItem={({item}) => <ActionableContact name={item.name} />}
                     ListEmptyComponent={<Text>No Reminders Set</Text>}
                     keyExtractor={(item, index) => index.toString()}
                 />
@@ -61,8 +71,11 @@ export default class Reminders extends Component {
                     <FlatList
                     data={this.state.contacts}
                     renderItem={({item}) => <ContactListItem 
-                                                name={item.givenName + " " + item.familyName} 
-                                                onPress={() => this.handlePress(item.givenName + " " + item.familyName)}
+                                                name= { Reminders.getName(item) } 
+                                                onPress={() => this.handlePress({
+                                                    name: Reminders.getName(item),
+                                                    number: Reminders.getNumber(item)
+                                                })}
                                             />}
                     
                     keyExtractor={(item, index) => index.toString()}
