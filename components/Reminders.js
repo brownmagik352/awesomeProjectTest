@@ -25,7 +25,7 @@ export default class Reminders extends Component {
             if (err) throw err;
           
             // contacts returned
-            console.log(contacts);
+            // console.log(contacts);
 
             this.setState({contacts: contacts});
         })
