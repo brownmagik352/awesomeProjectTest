@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   singleRow: {
@@ -38,3 +39,8 @@ export default class ActionableContact extends Component {
     );
   }
 }
+
+ActionableContact.propTypes = {
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+};

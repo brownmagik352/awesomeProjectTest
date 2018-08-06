@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   singleRow: {
@@ -20,3 +21,8 @@ export default class ContactListItem extends Component {
     );
   }
 }
+
+ContactListItem.propTypes = {
+  name: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
