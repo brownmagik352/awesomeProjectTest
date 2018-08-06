@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Button, AsyncStorage } from 'react-native';
+import { View, FlatList, StyleSheet, Button, AsyncStorage, alert } from 'react-native';
 import Contacts from 'react-native-contacts';
+// import PushNotification from 'react-native-push-notification';
 import ContactListItem from './ContactListItem';
 import ActionableContact from './ActionableContact';
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 50,
+  },
+});
 
 export default class Reminders extends Component {
   constructor(props) {
@@ -37,6 +44,39 @@ export default class Reminders extends Component {
     // });
   }
 
+  // TODO: handle getting name in all cases (names missing etc.)
+  static getName(contact) {
+    return `${contact.givenName} ${contact.familyName}`;
+  }
+
+  // TODO: handle getting name in all cases (names missing etc.)
+  static getNumber(contact) {
+    return contact.phoneNumbers[0].number;
+  }
+
+  toggleContactListVisible() {
+    const { contactListVisible } = this.state;
+    if (contactListVisible) {
+      this.setState({ contactListVisible: false });
+    } else {
+      this.setState({ contactListVisible: true });
+    }
+  }
+
+  handlePress(contact) {
+    // update state
+    let remindersList = [];
+    const { reminders } = this.state;
+    if (reminders != null) {
+      remindersList = reminders.slice();
+    }
+    remindersList.push(contact);
+    this.setState({ reminders: remindersList }); // TODO: don't update the whole array each time
+
+    // update stored data
+    AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+  }
+
   async retrieveReminders() {
     try {
       const storedReminders = await AsyncStorage.getItem('reminders');
@@ -52,56 +92,26 @@ export default class Reminders extends Component {
     }
   }
 
-  handlePress(contact) {
-    // update state
-    let remindersList = [];
-    if (this.state.reminders != null) {
-      remindersList = this.state.reminders.slice();
-    }
-    remindersList.push(contact);
-    this.setState({ reminders: remindersList }); // TODO: don't update the whole array each time
-
-    // update stored data
-    AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
-  }
-
-  toggleContactListVisible() {
-    if (this.state.contactListVisible) {
-      this.setState({ contactListVisible: false });
-    } else {
-      this.setState({ contactListVisible: true });
-    }
-  }
-
-  // TODO: handle getting name in all cases (names missing etc.)
-  static getName(contact) {
-    return `${contact.givenName} ${contact.familyName}`;
-  }
-
-  // TODO: handle getting name in all cases (names missing etc.)
-  static getNumber(contact) {
-    return contact.phoneNumbers[0].number;
-  }
-
   debugReset() {
     AsyncStorage.clear();
     this.setState({ reminders: [] });
   }
 
   render() {
+    const { reminders, contactListVisible, contacts } = this.state;
     return (
       <View style={styles.container}>
         <Button title="WIPE DATA" onPress={() => this.debugReset()} />
         <FlatList
-          data={this.state.reminders}
+          data={reminders}
           renderItem={({ item }) => <ActionableContact name={item.name} number={item.number} />}
           keyExtractor={item => item.name}
         />
         <Button title="Show/Hide Contacts" onPress={() => this.toggleContactListVisible()} />
 
-        {this.state.contactListVisible && (
+        {contactListVisible && (
           <FlatList
-            data={this.state.contacts}
+            data={contacts}
             renderItem={({ item }) => (
               <ContactListItem
                 name={Reminders.getName(item)}
@@ -120,9 +130,3 @@ export default class Reminders extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 50,
-  },
-});
