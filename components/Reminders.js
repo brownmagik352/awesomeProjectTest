@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet, Text, Button, AsyncStorage } from 'react-na
 import ContactListItem from './ContactListItem';
 import ActionableContact from './ActionableContact';
 import Contacts from 'react-native-contacts';
+import PushNotification from 'react-native-push-notification';
 
 export default class Reminders extends Component {
     constructor(props) {
@@ -29,6 +30,12 @@ export default class Reminders extends Component {
 
         // get stored reminders
         this.retrieveReminders();
+
+        // PushNotification.localNotificationSchedule({
+        //     //... You can use all the options from localNotifications
+        //     message: "Test 10s", // (required)
+        //     date: new Date(Date.now() + (10 * 1000))
+        // });
 
     }
 
