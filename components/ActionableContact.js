@@ -10,7 +10,7 @@ export default class ActionableContact extends Component {
                 <Text>{this.props.name}</Text>
                 <Button title="Call" onPress={() => call({number: this.props.number, prompt: true}).catch(console.error)} />
                 <Button title="Text" onPress={() => SendSMS.send({
-                    body: ' ',
+                    body: '',
                     recipients: [this.props.number],
                     successTypes: ['sent', 'queued']
                 }, (completed, cancelled, error) => {             
