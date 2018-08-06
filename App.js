@@ -1,10 +1,8 @@
 import React from 'react';
-import Reminders from './components/Reminders'
+import Main from './components/Main';
 
 export default class App extends React.Component {
   render() {
-    return (
-      <Reminders />
-    );
+    return <Main />;
   }
 }

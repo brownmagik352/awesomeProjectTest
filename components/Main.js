@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Button, AsyncStorage, alert } from 'react-n
 import Contacts from 'react-native-contacts';
 // import PushNotification from 'react-native-push-notification';
 import ContactListItem from './ContactListItem';
-import ActionableContact from './ActionableContact';
+import Reminder from './Reminder';
 
 const styles = StyleSheet.create({
   container: {
@@ -104,7 +104,7 @@ export default class Reminders extends Component {
         <Button title="WIPE DATA" onPress={() => this.debugReset()} />
         <FlatList
           data={reminders}
-          renderItem={({ item }) => <ActionableContact name={item.name} number={item.number} />}
+          renderItem={({ item }) => <Reminder name={item.name} number={item.number} />}
           keyExtractor={item => item.name}
         />
         <Button title="Show/Hide Contacts" onPress={() => this.toggleContactListVisible()} />

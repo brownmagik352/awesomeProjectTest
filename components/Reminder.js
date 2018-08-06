@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class ActionableContact extends Component {
+export default class Reminder extends Component {
   render() {
     const { number, name } = this.props;
     return (
@@ -40,7 +40,7 @@ export default class ActionableContact extends Component {
   }
 }
 
-ActionableContact.propTypes = {
+Reminder.propTypes = {
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
 };
