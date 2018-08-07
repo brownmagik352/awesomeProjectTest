@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Button, AsyncStorage, alert } from 'react-native';
+import { View, FlatList, StyleSheet, Button, AsyncStorage, Alert } from 'react-native';
 import Contacts from 'react-native-contacts';
 // import PushNotification from 'react-native-push-notification';
 import ContactListItem from './ContactListItem';
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Reminders extends Component {
+export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,9 +64,18 @@ export default class Reminders extends Component {
   }
 
   handlePress(contact) {
+    const { reminders } = this.state;
+
+    // check if name in reminders already
+    for (let i = 0; i < reminders.length; i += 1) {
+      if (reminders[i].name === contact.name) {
+        Alert.alert(`You already have a reminder set for ${contact.name}`);
+        return;
+      }
+    }
+
     // update state
     let remindersList = [];
-    const { reminders } = this.state;
     if (reminders != null) {
       remindersList = reminders.slice();
     }
@@ -86,7 +95,7 @@ export default class Reminders extends Component {
       }
       this.setState({ reminders });
     } catch (error) {
-      alert('Error loading saved reminders');
+      Alert.alert('Error loading saved reminders');
       console.log(error);
       this.setState({ reminders: [] });
     }
@@ -101,7 +110,7 @@ export default class Reminders extends Component {
     const { reminders, contactListVisible, contacts } = this.state;
     return (
       <View style={styles.container}>
-        <Button title="WIPE DATA" onPress={() => this.debugReset()} />
+        <Button title="DEBUG WIPE DATA" onPress={() => this.debugReset()} />
         <FlatList
           data={reminders}
           renderItem={({ item }) => <Reminder name={item.name} number={item.number} />}
@@ -114,11 +123,11 @@ export default class Reminders extends Component {
             data={contacts}
             renderItem={({ item }) => (
               <ContactListItem
-                name={Reminders.getName(item)}
+                name={Main.getName(item)}
                 onPress={() =>
                   this.handlePress({
-                    name: Reminders.getName(item),
-                    number: Reminders.getNumber(item),
+                    name: Main.getName(item),
+                    number: Main.getNumber(item),
                   })
                 }
               />
