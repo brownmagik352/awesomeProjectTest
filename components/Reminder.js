@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import call from 'react-native-phone-call';
-import SendSMS from 'react-native-sms';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -13,28 +11,13 @@ const styles = StyleSheet.create({
 
 export default class Reminder extends Component {
   render() {
-    const { number, name } = this.props;
+    const { name, lastContact, onPressCall, onPressText } = this.props;
     return (
       <View style={styles.singleRow}>
         <Text>{name}</Text>
-        <Button title="Call" onPress={() => call({ number, prompt: true }).catch(console.error)} />
-        <Button
-          title="Text"
-          onPress={() =>
-            SendSMS.send(
-              {
-                body: '',
-                recipients: [number],
-                successTypes: ['sent', 'queued'],
-              },
-              (completed, cancelled, error) => {
-                console.log(
-                  `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
-                );
-              }
-            )
-          }
-        />
+        <Button title="Call" onPress={() => onPressCall()} />
+        <Button title="Text" onPress={() => onPressText()} />
+        <Text>{lastContact}</Text>
       </View>
     );
   }
@@ -42,5 +25,7 @@ export default class Reminder extends Component {
 
 Reminder.propTypes = {
   name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  lastContact: PropTypes.string.isRequired,
+  onPressCall: PropTypes.func.isRequired,
+  onPressText: PropTypes.func.isRequired,
 };

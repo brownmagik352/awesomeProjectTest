@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Button, AsyncStorage, Alert } from 'react-native';
 import Contacts from 'react-native-contacts';
 // import PushNotification from 'react-native-push-notification';
+import call from 'react-native-phone-call';
+import SendSMS from 'react-native-sms';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
 
@@ -63,7 +65,7 @@ export default class Main extends Component {
     }
   }
 
-  handlePress(contact) {
+  handleContactPress(contact) {
     const { reminders } = this.state;
 
     // check if name in reminders already
@@ -74,16 +76,28 @@ export default class Main extends Component {
       }
     }
 
-    // update state
-    let remindersList = [];
-    if (reminders != null) {
-      remindersList = reminders.slice();
-    }
-    remindersList.push(contact);
-    this.setState({ reminders: remindersList }); // TODO: don't update the whole array each time
+    this.updateReminders(contact, '');
+  }
 
-    // update stored data
-    AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+  handleReminderPress(contact, callOrText) {
+    if (callOrText === 'call') {
+      call({ number: contact.number, prompt: true }).catch(console.error);
+      this.updateReminders(contact, `Called on ${Date.now()}`);
+    } else if (callOrText === 'text') {
+      SendSMS.send(
+        {
+          body: '',
+          recipients: [contact.number],
+          successTypes: ['sent', 'queued'],
+        },
+        (completed, cancelled, error) => {
+          this.updateReminders(contact, `Messaged on ${Date.now()}`); // TODO: handle cancel & error case
+          console.log(
+            `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
+          );
+        }
+      );
+    }
   }
 
   async retrieveReminders() {
@@ -101,6 +115,36 @@ export default class Main extends Component {
     }
   }
 
+  // TODO: don't update the whole array each time
+  // TODO: need to not append but rather update existing entry
+  // TODO: create saveState and make that async
+  async updateReminders(contactToUpdate, lastContactString) {
+    const { reminders } = this.state;
+    let remindersList = []; // TODO: update initialization to use ternary operator
+    if (reminders != null) {
+      remindersList = reminders.slice();
+    }
+
+    // update existing reminder vs. add new one based on if lastContactString updates or not
+    if (lastContactString !== '') {
+      const matchingIndex = remindersList.indexOf(contactToUpdate);
+      remindersList[matchingIndex].lastContact = lastContactString;
+    } else {
+      remindersList.push(contactToUpdate);
+    }
+
+    // update state
+    this.setState({ reminders: remindersList });
+
+    try {
+      // update stored data
+      await AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+    } catch (error) {
+      Alert.alert('Error saving reminders');
+      console.log(error);
+    }
+  }
+
   debugReset() {
     AsyncStorage.clear();
     this.setState({ reminders: [] });
@@ -113,7 +157,14 @@ export default class Main extends Component {
         <Button title="DEBUG WIPE DATA" onPress={() => this.debugReset()} />
         <FlatList
           data={reminders}
-          renderItem={({ item }) => <Reminder name={item.name} number={item.number} />}
+          renderItem={({ item }) => (
+            <Reminder
+              name={item.name}
+              lastContact={item.lastContact}
+              onPressCall={() => this.handleReminderPress(item, 'call')}
+              onPressText={() => this.handleReminderPress(item, 'text')}
+            />
+          )}
           keyExtractor={item => item.name}
         />
         <Button title="Show/Hide Contacts" onPress={() => this.toggleContactListVisible()} />
@@ -125,9 +176,10 @@ export default class Main extends Component {
               <ContactListItem
                 name={Main.getName(item)}
                 onPress={() =>
-                  this.handlePress({
+                  this.handleContactPress({
                     name: Main.getName(item),
                     number: Main.getNumber(item),
+                    lastContact: '',
                   })
                 }
               />
