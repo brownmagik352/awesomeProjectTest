@@ -104,9 +104,7 @@ export default class Main extends Component {
     try {
       const storedReminders = await AsyncStorage.getItem('reminders');
       let reminders = JSON.parse(storedReminders);
-      if (reminders == null) {
-        reminders = [];
-      }
+      if (reminders == null) reminders = [];
       this.setState({ reminders });
     } catch (error) {
       Alert.alert('Error loading saved reminders');
@@ -116,14 +114,9 @@ export default class Main extends Component {
   }
 
   // TODO: don't update the whole array each time
-  // TODO: need to not append but rather update existing entry
-  // TODO: create saveState and make that async
   async updateReminders(contactToUpdate, lastContactString) {
     const { reminders } = this.state;
-    let remindersList = []; // TODO: update initialization to use ternary operator
-    if (reminders != null) {
-      remindersList = reminders.slice();
-    }
+    const remindersList = reminders != null ? reminders.slice() : [];
 
     // update existing reminder vs. add new one based on if lastContactString updates or not
     if (lastContactString !== '') {
@@ -133,12 +126,11 @@ export default class Main extends Component {
       remindersList.push(contactToUpdate);
     }
 
-    // update state
-    this.setState({ reminders: remindersList });
-
     try {
       // update stored data
       await AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+      // update state
+      this.setState({ reminders: remindersList });
     } catch (error) {
       Alert.alert('Error saving reminders');
       console.log(error);
@@ -179,7 +171,6 @@ export default class Main extends Component {
                   this.handleContactPress({
                     name: Main.getName(item),
                     number: Main.getNumber(item),
-                    lastContact: '',
                   })
                 }
               />
