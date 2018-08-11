@@ -4,6 +4,7 @@ import Contacts from 'react-native-contacts';
 // import PushNotification from 'react-native-push-notification';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
+import moment from 'moment';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
 
@@ -80,9 +81,11 @@ export default class Main extends Component {
   }
 
   handleReminderPress(contact, callOrText) {
+    const nowLocalized = moment().format('MMMM Do YYYY');
+
     if (callOrText === 'call') {
       call({ number: contact.number, prompt: true }).catch(console.error);
-      this.updateReminders(contact, `Called on ${Date.now()}`);
+      this.updateReminders(contact, `Called on ${nowLocalized}`);
     } else if (callOrText === 'text') {
       SendSMS.send(
         {
@@ -91,7 +94,7 @@ export default class Main extends Component {
           successTypes: ['sent', 'queued'],
         },
         (completed, cancelled, error) => {
-          this.updateReminders(contact, `Messaged on ${Date.now()}`); // TODO: handle cancel & error case
+          this.updateReminders(contact, `Messaged on ${nowLocalized}`); // TODO: handle cancel & error case
           console.log(
             `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
           );
