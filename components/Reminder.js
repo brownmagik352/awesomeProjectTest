@@ -13,10 +13,12 @@ export default class Reminder extends Component {
   render() {
     const { name, lastContact, onPressCall, onPressText } = this.props;
     return (
-      <View style={styles.singleRow}>
-        <Text>{name}</Text>
-        <Button title="Call" onPress={() => onPressCall()} />
-        <Button title="Text" onPress={() => onPressText()} />
+      <View>
+        <View style={styles.singleRow}>
+          <Text>{name}</Text>
+          <Button title="Call" onPress={() => onPressCall()} />
+          <Button title="Text" onPress={() => onPressText()} />
+        </View>
         <Text>{lastContact}</Text>
       </View>
     );
