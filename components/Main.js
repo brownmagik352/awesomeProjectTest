@@ -126,7 +126,10 @@ export default class Main extends Component {
       const matchingIndex = remindersList.indexOf(contactToUpdate);
       remindersList[matchingIndex].lastContact = lastContactString;
     } else {
-      remindersList.push(contactToUpdate);
+      // copy object, give it lastContactString, add it to the reminders array
+      const contactToAdd = Object.assign({}, contactToUpdate);
+      contactToAdd.lastContact = lastContactString;
+      remindersList.push(contactToAdd);
     }
 
     try {
