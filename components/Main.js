@@ -14,17 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// notification ID numbers for react-native-push-notifications is smaller than all possible phone numbers
-function normalize(numberString) {
-  const originalNumber = Number(numberString);
-  const maxNotificationIdVal = Math.pow(2, 31) - 1;
-  if (originalNumber > maxNotificationIdVal) {
-    const normalizedVal = -1 * (originalNumber % maxNotificationIdVal);
-    return `${normalizedVal}`;
-  }
-
-  return numberString;
-}
+// TODO: move back into static functions
 
 // given a phone number in any string format, strips it down to just digits
 function stripNonDigitsFromPhoneNumber(phoneNumberString) {
@@ -74,6 +64,25 @@ export default class Main extends Component {
     this.retrieveReminders();
   }
 
+  // assigns a new random ID
+  getNewReminderId() {
+    const maxInt = Math.pow(2, 31) - 1; // react-native-push-notification has a 32bit int max
+    let idCandidate = Math.floor(Math.random() * maxInt);
+    while (this.alreadyUsedReminderId(idCandidate)) {
+      idCandidate = Math.floor(Math.random() * maxInt);
+    }
+    return idCandidate;
+  }
+
+  // checks if a given id is already being used for a reminder
+  alreadyUsedReminderId(idCandidate) {
+    const { reminders } = this.state;
+    for (let i = 0; i < reminders.length; i += 1) {
+      if (reminders[i].id === idCandidate) return true;
+    }
+    return false;
+  }
+
   toggleContactListVisible() {
     const { contactListVisible } = this.state;
     if (contactListVisible) {
@@ -96,7 +105,7 @@ export default class Main extends Component {
 
     this.updateReminders(contact, '').then(
       PushNotification.localNotificationSchedule({
-        id: normalize(contact.number),
+        id: `${contact.id}`,
         message: contact.name, // (required)
         date: new Date(Date.now() + 10 * 1000),
         repeatType: 'time',
@@ -105,6 +114,7 @@ export default class Main extends Component {
     );
   }
 
+  // TODO: put lastContactString and CallOrText at initialization in render
   handleReminderPress(contact, callOrText) {
     const nowLocalized = moment().format('MMMM Do YYYY');
 
@@ -203,6 +213,7 @@ export default class Main extends Component {
                   this.handleContactPress({
                     name: getName(item),
                     number: getNumber(item),
+                    id: this.getNewReminderId(),
                   })
                 }
               />
