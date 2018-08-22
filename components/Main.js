@@ -15,22 +15,6 @@ const styles = StyleSheet.create({
 });
 
 export default class Main extends Component {
-  // given a phone number string to just digits
-  static stripNonDigitsFromPhoneNumber(phoneNumberString) {
-    const validNumChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const numberStringArray = phoneNumberString.split('');
-    const badCharsIndicesArray = [];
-    // find all the indices where there isn't a number in the phoneNumberString
-    for (let i = 0; i < numberStringArray.length; i += 1) {
-      if (!validNumChars.includes(numberStringArray[i])) badCharsIndicesArray.push(i);
-    }
-    // remove all bad chars
-    for (let i = badCharsIndicesArray.length - 1; i >= 0; i -= 1)
-      numberStringArray.splice(badCharsIndicesArray[i], 1);
-
-    return numberStringArray.join('');
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -52,6 +36,22 @@ export default class Main extends Component {
     this.retrieveReminders();
   }
 
+  // given a phone number string to just digits
+  static stripNonDigitsFromPhoneNumber(phoneNumberString) {
+    const validNumChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const numberStringArray = phoneNumberString.split('');
+    const badCharsIndicesArray = [];
+    // find all the indices where there isn't a number in the phoneNumberString
+    for (let i = 0; i < numberStringArray.length; i += 1) {
+      if (!validNumChars.includes(numberStringArray[i])) badCharsIndicesArray.push(i);
+    }
+    // remove all bad chars
+    for (let i = badCharsIndicesArray.length - 1; i >= 0; i -= 1)
+      numberStringArray.splice(badCharsIndicesArray[i], 1);
+
+    return numberStringArray.join('');
+  }
+
   // TODO: handle getting name in all cases (names missing etc.)
   static getName(contact) {
     return `${contact.givenName} ${contact.familyName}`;
@@ -59,6 +59,7 @@ export default class Main extends Component {
 
   // TODO: handle getting name in all cases (names missing etc.)
   static getNumber(contact) {
+    if (contact.phoneNumbers.length === 0) return ''; // need to remove for real
     return Main.stripNonDigitsFromPhoneNumber(contact.phoneNumbers[0].number);
   }
 
@@ -90,7 +91,7 @@ export default class Main extends Component {
     }
   }
 
-  handleContactPress(contact) {
+  handleContactPress = contact => {
     const { reminders } = this.state;
 
     // check if name in reminders already
@@ -110,7 +111,7 @@ export default class Main extends Component {
         repeatTime: 5 * 1000,
       })
     );
-  }
+  };
 
   // TODO: put lastContactString and CallOrText at initialization in render
   handleReminderPress(contact, callOrText) {
@@ -207,13 +208,9 @@ export default class Main extends Component {
             renderItem={({ item }) => (
               <ContactListItem
                 name={Main.getName(item)}
-                onPress={() =>
-                  this.handleContactPress({
-                    name: Main.getName(item),
-                    number: Main.getNumber(item),
-                    id: this.getNewReminderId(),
-                  })
-                }
+                number={Main.getNumber(item)}
+                id={this.getNewReminderId()}
+                parentCallbackHandleContactPress={this.handleContactPress}
               />
             )}
             keyExtractor={index => index.toString()}

@@ -10,11 +10,16 @@ const styles = StyleSheet.create({
 });
 
 export default class ContactListItem extends Component {
+  handlePress = () => {
+    const { parentCallbackHandleContactPress, name, number, id } = this.props;
+    parentCallbackHandleContactPress({ name, number, id });
+  };
+
   render() {
-    const { onPress, name } = this.props;
+    const { name } = this.props;
     return (
       <View style={styles.singleRow}>
-        <TouchableOpacity onPress={() => onPress()}>
+        <TouchableOpacity onPress={this.handlePress}>
           <Text>{name}</Text>
         </TouchableOpacity>
       </View>
@@ -24,5 +29,7 @@ export default class ContactListItem extends Component {
 
 ContactListItem.propTypes = {
   name: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  number: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  parentCallbackHandleContactPress: PropTypes.func.isRequired,
 };
