@@ -63,6 +63,14 @@ export default class Main extends Component {
     return Main.stripNonDigitsFromPhoneNumber(contact.phoneNumbers[0].number);
   }
 
+  static getStartDate(startDateString) {
+    return new Date(Date.now() + 5 * 1000);
+  }
+
+  static getRepeatTime(repeatString) {
+    return 5 * 1000;
+  }
+
   // assigns a new random ID
   getNewReminderId() {
     const maxInt = Math.pow(2, 31) - 1; // react-native-push-notification has a 32bit int max
@@ -106,9 +114,9 @@ export default class Main extends Component {
       PushNotification.localNotificationSchedule({
         id: `${contact.id}`,
         message: contact.name, // (required)
-        date: new Date(Date.now() + 5 * 1000),
+        date: Main.getStartDate(contact.startDateString),
         repeatType: 'time',
-        repeatTime: 5 * 1000,
+        repeatTime: Main.getRepeatTime(contact.repeatString),
       })
     );
   };
@@ -194,6 +202,7 @@ export default class Main extends Component {
             <Reminder
               name={item.name}
               lastContact={item.lastContact}
+              repeatString={item.repeatString}
               onPressCall={() => this.handleReminderPress(item, 'call')}
               onPressText={() => this.handleReminderPress(item, 'text')}
             />
