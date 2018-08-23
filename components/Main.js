@@ -64,11 +64,34 @@ export default class Main extends Component {
   }
 
   static getStartDate(startDateString) {
-    return new Date(Date.now() + 5 * 1000);
+    const mapStartDateStringToStartDateDate = {
+      'One day from now': 1,
+      'Two days from now': 2,
+      'Three days from now': 3,
+      'Four days from now': 4,
+      'Five days from now': 5,
+      'Six days from now': 6,
+    };
+
+    const today = new Date();
+    const firstDate = new Date(today);
+    firstDate.setDate(today.getDate() + mapStartDateStringToStartDateDate[startDateString]);
+    // normalize to noon, allow for min/s/ms variation so as to not get bombarded
+    firstDate.setHours(12);
+    return firstDate;
   }
 
   static getRepeatTime(repeatString) {
-    return 5 * 1000;
+    const oneDayMilliseconds = 1000 * 60 * 60 * 24;
+    const mapRepeatStringToRepeatTime = {
+      'Every day': 1,
+      'Every week': 7,
+      'Every two weeks': 14,
+      'Every three weeks': 21,
+      'Every four weeks': 28,
+    };
+
+    return mapRepeatStringToRepeatTime[repeatString] * oneDayMilliseconds;
   }
 
   // assigns a new random ID

@@ -69,7 +69,7 @@ export default class ContactListItem extends Component {
               <Picker.Item label="Three days from now" value="Three days from now" />
               <Picker.Item label="Four days from now" value="Four days from now" />
               <Picker.Item label="Five days from now" value="Five days from now" />
-              <Picker.Item label="Five days from now" value="Five days from now" />
+              <Picker.Item label="Six days from now" value="Six days from now" />
             </Picker>
 
             <Picker
