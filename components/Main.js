@@ -168,6 +168,30 @@ export default class Main extends Component {
     }
   }
 
+  async deleteReminder(contactToBeDeleted) {
+    const { reminders } = this.state;
+
+    if (reminders != null && reminders.length > 0) {
+      const remindersList = reminders.slice();
+      const deletionIndex = remindersList.findIndex(
+        contact => contact.name === contactToBeDeleted.name
+      );
+      remindersList.splice(deletionIndex, 1);
+
+      try {
+        // update stored data
+        await AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+        // update state
+        this.setState({ reminders: remindersList });
+        PushNotification.cancelLocalNotifications({ id: `${contactToBeDeleted.id}` });
+        Alert.alert(`${contactToBeDeleted.name} deleted`);
+      } catch (error) {
+        Alert.alert(`Error deleting ${contactToBeDeleted.name}`);
+        console.log(error);
+      }
+    }
+  }
+
   async retrieveReminders() {
     try {
       const storedReminders = await AsyncStorage.getItem('reminders');
@@ -228,6 +252,7 @@ export default class Main extends Component {
               repeatString={item.repeatString}
               onPressCall={() => this.handleReminderPress(item, 'call')}
               onPressText={() => this.handleReminderPress(item, 'text')}
+              onDelete={() => this.deleteReminder(item)}
             />
           )}
           keyExtractor={item => item.name}

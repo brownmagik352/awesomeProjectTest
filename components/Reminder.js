@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 
 export default class Reminder extends Component {
   render() {
-    const { name, lastContact, onPressCall, onPressText, repeatString } = this.props;
+    const { name, lastContact, onPressCall, onPressText, repeatString, onDelete } = this.props;
     return (
       <View>
         <View style={styles.singleRow}>
@@ -20,6 +20,7 @@ export default class Reminder extends Component {
           </Text>
           <Button title="Call" onPress={() => onPressCall()} />
           <Button title="Text" onPress={() => onPressText()} />
+          <Button title="X" onPress={() => onDelete()} />
         </View>
         <Text>{lastContact}</Text>
       </View>
@@ -33,4 +34,5 @@ Reminder.propTypes = {
   repeatString: PropTypes.string.isRequired,
   onPressCall: PropTypes.func.isRequired,
   onPressText: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
