@@ -71,7 +71,7 @@ export default class Main extends Component {
     };
 
     /* TESTING ONLY */
-    if (startDateString === 'test') return new Date(Date.now() + 10 * 1000);
+    if (startDateString === 'test') return new Date(Date.now() + 5 * 1000);
 
     const today = new Date();
     const firstDate = new Date(today);
@@ -250,7 +250,7 @@ export default class Main extends Component {
                 parentCallbackHandleContactPress={this.addReminder}
               />
             )}
-            keyExtractor={index => index.toString()}
+            keyExtractor={item => item.name}
           />
         )}
       </View>

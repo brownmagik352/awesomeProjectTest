@@ -91,7 +91,7 @@ export default class ContactListItem extends Component {
               <Picker.Item label="Every four weeks" value="Every four weeks" />
               <Picker.Item label="test" value="test" />
             </Picker>
-            <Button title="Test" onPress={this.handlePress} />
+            <Button title="Add" onPress={this.handlePress} />
           </View>
         </Modal>
       </View>
