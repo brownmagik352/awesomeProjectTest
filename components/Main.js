@@ -122,36 +122,45 @@ export default class Main extends Component {
     }
   }
 
-  handleContactPress = contact => {
+  addReminder = contactToAdd => {
     const { reminders } = this.state;
+    const remindersCopy = reminders != null ? reminders.slice() : [];
 
     // check if name in reminders already
     for (let i = 0; i < reminders.length; i += 1) {
-      if (reminders[i].name === contact.name || reminders[i].number === contact.number) {
-        Alert.alert(`You already have a reminder set for ${contact.name} (${contact.number})`);
+      if (reminders[i].name === contactToAdd.name || reminders[i].number === contactToAdd.number) {
+        Alert.alert(
+          `You already have a reminder set for ${contactToAdd.name} (${contactToAdd.number})`
+        );
         return;
       }
     }
 
-    this.updateReminders(contact, '').then(
-      PushNotification.localNotificationSchedule({
-        id: `${contact.id}`,
-        message: contact.name, // (required)
-        date: Main.getStartDate(contact.startDateString),
-        repeatType: 'time',
-        repeatTime: Main.getRepeatTime(contact.repeatString),
-      })
-    );
+    remindersCopy.push(contactToAdd);
+
+    this.saveReminderData(remindersCopy)
+      .then(
+        PushNotification.localNotificationSchedule({
+          id: `${contactToAdd.id}`,
+          message: contactToAdd.name, // (required)
+          date: new Date(Date.now() + 5 * 1000),
+          repeatType: 'time',
+          repeatTime: 1000 * 5,
+        })
+      )
+      .catch(error => {
+        Alert.alert(`Error deleting reminder for ${contactToAdd.name}`);
+        console.log(error);
+      });
   };
 
-  // TODO: put lastContactString and CallOrText at initialization in render
-  handleReminderPress(contact, callOrText) {
+  // TODO: pass call or text from function
+  reminderContacted(contact, callOrText) {
     const nowLocalized = moment().format('MMMM Do YYYY');
 
-    if (callOrText === 'call') {
+    if (callOrText === 'Called') {
       call({ number: contact.number, prompt: true }).catch(console.error);
-      this.updateReminders(contact, `Called on ${nowLocalized}`);
-    } else if (callOrText === 'text') {
+    } else if (callOrText === 'Texted') {
       SendSMS.send(
         {
           body: '',
@@ -159,36 +168,38 @@ export default class Main extends Component {
           successTypes: ['sent', 'queued'],
         },
         (completed, cancelled, error) => {
-          this.updateReminders(contact, `Messaged on ${nowLocalized}`); // TODO: handle cancel & error case
           console.log(
             `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
           );
         }
       );
     }
+
+    const { reminders } = this.state;
+    const remindersCopy = reminders != null ? reminders.slice() : [];
+    const matchingIndex = remindersCopy.indexOf(contact);
+    remindersCopy[matchingIndex].lastContact = `${callOrText} on ${nowLocalized}`;
+    this.saveReminderData(remindersCopy).catch(error => {
+      console.log(error);
+    });
   }
 
-  async deleteReminder(contactToBeDeleted) {
+  deleteReminder(contactToBeDeleted) {
     const { reminders } = this.state;
 
     if (reminders != null && reminders.length > 0) {
-      const remindersList = reminders.slice();
-      const deletionIndex = remindersList.findIndex(
+      const remindersCopy = reminders.slice();
+      const deletionIndex = remindersCopy.findIndex(
         contact => contact.name === contactToBeDeleted.name
       );
-      remindersList.splice(deletionIndex, 1);
+      remindersCopy.splice(deletionIndex, 1);
 
-      try {
-        // update stored data
-        await AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
-        // update state
-        this.setState({ reminders: remindersList });
-        PushNotification.cancelLocalNotifications({ id: `${contactToBeDeleted.id}` });
-        Alert.alert(`${contactToBeDeleted.name} deleted`);
-      } catch (error) {
-        Alert.alert(`Error deleting ${contactToBeDeleted.name}`);
-        console.log(error);
-      }
+      this.saveReminderData(remindersCopy)
+        .then(PushNotification.cancelLocalNotifications({ id: `${contactToBeDeleted.id}` }))
+        .catch(error => {
+          Alert.alert(`Error deleting reminder for ${contactToBeDeleted.name}`);
+          console.log(error);
+        });
     }
   }
 
@@ -205,27 +216,12 @@ export default class Main extends Component {
     }
   }
 
-  // TODO: don't update the whole array each time
-  async updateReminders(contactToUpdate, lastContactString) {
-    const { reminders } = this.state;
-    const remindersList = reminders != null ? reminders.slice() : [];
-
-    // update existing reminder vs. add new one based on if lastContactString updates or not
-    if (lastContactString !== '') {
-      const matchingIndex = remindersList.indexOf(contactToUpdate);
-      remindersList[matchingIndex].lastContact = lastContactString;
-    } else {
-      // copy object, give it lastContactString, add it to the reminders array
-      const contactToAdd = Object.assign({}, contactToUpdate);
-      contactToAdd.lastContact = lastContactString;
-      remindersList.push(contactToAdd);
-    }
-
+  async saveReminderData(updatedReminders) {
     try {
       // update stored data
-      await AsyncStorage.setItem('reminders', JSON.stringify(remindersList));
+      await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
       // update state
-      this.setState({ reminders: remindersList });
+      this.setState({ reminders: updatedReminders });
     } catch (error) {
       Alert.alert('Error saving reminders');
       console.log(error);
@@ -250,8 +246,8 @@ export default class Main extends Component {
               name={item.name}
               lastContact={item.lastContact}
               repeatString={item.repeatString}
-              onPressCall={() => this.handleReminderPress(item, 'call')}
-              onPressText={() => this.handleReminderPress(item, 'text')}
+              onPressCall={() => this.reminderContacted(item, 'Called')}
+              onPressText={() => this.reminderContacted(item, 'Texted')}
               onDelete={() => this.deleteReminder(item)}
             />
           )}
@@ -267,7 +263,7 @@ export default class Main extends Component {
                 name={Main.getName(item)}
                 number={Main.getNumber(item)}
                 id={this.getNewReminderId()}
-                parentCallbackHandleContactPress={this.handleContactPress}
+                parentCallbackHandleContactPress={this.addReminder}
               />
             )}
             keyExtractor={index => index.toString()}

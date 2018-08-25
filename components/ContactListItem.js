@@ -33,7 +33,14 @@ export default class ContactListItem extends Component {
     this.setModalVisible(false);
     const { parentCallbackHandleContactPress, name, number, id } = this.props;
     const { repeatString, startDateString } = this.state;
-    parentCallbackHandleContactPress({ name, number, id, repeatString, startDateString });
+    parentCallbackHandleContactPress({
+      name,
+      number,
+      id,
+      repeatString,
+      startDateString,
+      lastContactString: '',
+    });
   };
 
   render() {
