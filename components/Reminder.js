@@ -58,7 +58,14 @@ export default class Reminder extends Component {
 }
 
 Reminder.propTypes = {
-  reminder: PropTypes.object.isRequired,
+  reminder: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    repeatString: PropTypes.string.isRequired,
+    startDateString: PropTypes.string.isRequired,
+    lastContact: PropTypes.string.isRequired,
+  }).isRequired,
   parentCallbackUpdateReminder: PropTypes.func.isRequired,
   parentCallbackDeleteReminder: PropTypes.func.isRequired,
 };
