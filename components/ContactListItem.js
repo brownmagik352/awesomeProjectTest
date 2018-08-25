@@ -77,6 +77,7 @@ export default class ContactListItem extends Component {
               <Picker.Item label="Four days from now" value="Four days from now" />
               <Picker.Item label="Five days from now" value="Five days from now" />
               <Picker.Item label="Six days from now" value="Six days from now" />
+              <Picker.Item label="test" value="test" />
             </Picker>
 
             <Picker
@@ -88,6 +89,7 @@ export default class ContactListItem extends Component {
               <Picker.Item label="Every two weeks" value="Every two weeks" />
               <Picker.Item label="Every three weeks" value="Every three weeks" />
               <Picker.Item label="Every four weeks" value="Every four weeks" />
+              <Picker.Item label="test" value="test" />
             </Picker>
             <Button title="Test" onPress={this.handlePress} />
           </View>

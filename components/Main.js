@@ -70,6 +70,9 @@ export default class Main extends Component {
       'Six days from now': 6,
     };
 
+    /* TESTING ONLY */
+    if (startDateString === 'test') return new Date(Date.now() + 10 * 1000);
+
     const today = new Date();
     const firstDate = new Date(today);
     firstDate.setDate(today.getDate() + mapStartDateStringToStartDateDate[startDateString]);
@@ -87,6 +90,9 @@ export default class Main extends Component {
       'Every three weeks': 21,
       'Every four weeks': 28,
     };
+
+    /* TESTING ONLY */
+    if (repeatString === 'test') return 5 * 1000;
 
     return mapRepeatStringToRepeatTime[repeatString] * oneDayMilliseconds;
   }
@@ -208,7 +214,8 @@ export default class Main extends Component {
     }
   }
 
-  debugReset() {
+  /* TESTING ONLY */
+  testReset() {
     AsyncStorage.clear();
     PushNotification.cancelAllLocalNotifications();
     this.setState({ reminders: [] });
@@ -218,7 +225,7 @@ export default class Main extends Component {
     const { reminders, contactListVisible, contacts } = this.state;
     return (
       <View style={styles.container}>
-        <Button title="DEBUG WIPE DATA" onPress={() => this.debugReset()} />
+        <Button title="DEBUG WIPE DATA" onPress={() => this.testReset()} />
         <FlatList
           data={reminders}
           renderItem={({ item }) => (
