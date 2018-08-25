@@ -45,33 +45,11 @@ export default class Main extends Component {
     this.retrieveReminders();
   }
 
-  // given a phone number string to just digits
-  static stripNonDigitsFromPhoneNumber(phoneNumberString) {
-    const validNumChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    const numberStringArray = phoneNumberString.split('');
-    const badCharsIndicesArray = [];
-    // find all the indices where there isn't a number in the phoneNumberString
-    for (let i = 0; i < numberStringArray.length; i += 1) {
-      if (!validNumChars.includes(numberStringArray[i])) badCharsIndicesArray.push(i);
-    }
-    // remove all bad chars
-    for (let i = badCharsIndicesArray.length - 1; i >= 0; i -= 1)
-      numberStringArray.splice(badCharsIndicesArray[i], 1);
-
-    return numberStringArray.join('');
-  }
-
   // TODO: handle getting name in all cases (names missing etc.)
   static getName(contact) {
     const firstName = contact.givenName != null ? contact.givenName : '';
     const lastName = contact.familyName != null ? contact.familyName : '';
     return `${firstName} ${lastName}`;
-  }
-
-  // TODO: handle getting name in all cases (names missing etc.)
-  static getNumber(contact) {
-    if (contact.phoneNumbers.length === 0) return ''; // need to remove for real
-    return Main.stripNonDigitsFromPhoneNumber(contact.phoneNumbers[0].number);
   }
 
   static getStartDate(startDateString) {
@@ -115,9 +93,9 @@ export default class Main extends Component {
   contactsListPrep(rawContacts) {
     const contacts = rawContacts.map((contact, index) => {
       const name = Main.getName(contact);
-      const number = Main.getNumber(contact);
+      const { phoneNumbers } = contact;
       const key = `${name} (${index})`; // need a key for virtualizedlist
-      return { name, number, key };
+      return { name, phoneNumbers, key };
     });
 
     this.setState({ contacts });
@@ -288,7 +266,7 @@ export default class Main extends Component {
               renderItem={({ item }) => (
                 <ContactListItem
                   name={item.name}
-                  number={item.number}
+                  phoneNumbers={item.phoneNumbers}
                   id={this.getNewReminderId()}
                   parentCallbackHandleContactPress={this.addReminder}
                 />

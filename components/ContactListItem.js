@@ -24,7 +24,22 @@ export default class ContactListItem extends Component {
     modalVisible: false,
     repeatString: 'Every day',
     startDateString: 'One day from now',
+    number: '',
   };
+
+  // create Picker.item for phoneNumbers
+  static createPickerForPhoneNumbers(phoneNumbers) {
+    const numberStringsUnique = [];
+    // go in reverse so first number is first in picker
+    for (let i = phoneNumbers.length - 1; i >= 0; i -= 1) {
+      const n = phoneNumbers[i].number;
+      // only unique numbers
+      if (!numberStringsUnique.includes(n)) numberStringsUnique.push(n);
+    }
+    return numberStringsUnique.map((number, index) => (
+      <Picker.Item label={number} value={number} key={`${number} (${index})`} />
+    ));
+  }
 
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
@@ -32,8 +47,8 @@ export default class ContactListItem extends Component {
 
   handlePress = () => {
     this.setModalVisible(false);
-    const { parentCallbackHandleContactPress, name, number, id } = this.props;
-    const { repeatString, startDateString } = this.state;
+    const { parentCallbackHandleContactPress, name, id } = this.props;
+    const { repeatString, startDateString, number } = this.state;
     parentCallbackHandleContactPress({
       name,
       number,
@@ -45,8 +60,9 @@ export default class ContactListItem extends Component {
   };
 
   render() {
-    const { name } = this.props;
-    const { modalVisible, repeatString, startDateString } = this.state;
+    const { name, phoneNumbers } = this.props;
+    const { modalVisible, repeatString, startDateString, number } = this.state;
+
     return (
       <View style={styles.singleRow}>
         <TouchableOpacity
@@ -68,6 +84,12 @@ export default class ContactListItem extends Component {
         >
           <View>
             <Text>Set reminder for {name}:</Text>
+            <Picker
+              selectedValue={number}
+              onValueChange={itemValue => this.setState({ number: itemValue })}
+            >
+              {ContactListItem.createPickerForPhoneNumbers(phoneNumbers)}
+            </Picker>
             <Picker
               selectedValue={startDateString}
               onValueChange={itemValue => this.setState({ startDateString: itemValue })}
@@ -102,7 +124,8 @@ export default class ContactListItem extends Component {
 
 ContactListItem.propTypes = {
   name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  phoneNumbers: PropTypes.arrayOf(PropTypes.shape({ number: PropTypes.string.isRequired }))
+    .isRequired,
   id: PropTypes.number.isRequired,
   parentCallbackHandleContactPress: PropTypes.func.isRequired,
 };
