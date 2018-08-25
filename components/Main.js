@@ -26,7 +26,7 @@ export default class Main extends Component {
     Contacts.getAll((err, contacts) => {
       if (err) throw err;
 
-      this.setState({ contacts });
+      this.contactsListPrep(contacts);
     });
 
     // get stored reminders
@@ -51,7 +51,9 @@ export default class Main extends Component {
 
   // TODO: handle getting name in all cases (names missing etc.)
   static getName(contact) {
-    return `${contact.givenName} ${contact.familyName}`;
+    const firstName = contact.givenName != null ? contact.givenName : '';
+    const lastName = contact.familyName != null ? contact.familyName : '';
+    return `${firstName} ${lastName}`;
   }
 
   // TODO: handle getting name in all cases (names missing etc.)
@@ -95,6 +97,18 @@ export default class Main extends Component {
     if (repeatString === 'test') return 5 * 1000;
 
     return mapRepeatStringToRepeatTime[repeatString] * oneDayMilliseconds;
+  }
+
+  // create contact list with minimal needed info and a unique key
+  contactsListPrep(rawContacts) {
+    const contacts = rawContacts.map((contact, index) => {
+      const name = Main.getName(contact);
+      const number = Main.getNumber(contact);
+      const key = `${name} (${index})`; // need a key for virtualizedlist
+      return { name, number, key };
+    });
+
+    this.setState({ contacts });
   }
 
   // assigns a new random ID
@@ -244,13 +258,12 @@ export default class Main extends Component {
             data={contacts}
             renderItem={({ item }) => (
               <ContactListItem
-                name={Main.getName(item)}
-                number={Main.getNumber(item)}
+                name={item.name}
+                number={item.number}
                 id={this.getNewReminderId()}
                 parentCallbackHandleContactPress={this.addReminder}
               />
             )}
-            keyExtractor={item => item.name}
           />
         )}
       </View>
