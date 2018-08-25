@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 export default class ContactListItem extends Component {
   state = {
     modalVisible: false,
-    repeatString: 'Every Week',
+    repeatString: 'Every day',
     startDateString: 'One day from now',
   };
 
