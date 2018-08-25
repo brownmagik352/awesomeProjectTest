@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Button, AsyncStorage, Alert } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
-import call from 'react-native-phone-call';
-import SendSMS from 'react-native-sms';
-import moment from 'moment';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
 
@@ -143,9 +140,9 @@ export default class Main extends Component {
         PushNotification.localNotificationSchedule({
           id: `${contactToAdd.id}`,
           message: contactToAdd.name, // (required)
-          date: new Date(Date.now() + 5 * 1000),
+          date: Main.getStartDate(contactToAdd.startDateString),
           repeatType: 'time',
-          repeatTime: 1000 * 5,
+          repeatTime: Main.getRepeatTime(contactToAdd.repeatString),
         })
       )
       .catch(error => {
@@ -154,37 +151,20 @@ export default class Main extends Component {
       });
   };
 
-  // TODO: pass call or text from function
-  reminderContacted(contact, callOrText) {
-    const nowLocalized = moment().format('MMMM Do YYYY');
-
-    if (callOrText === 'Called') {
-      call({ number: contact.number, prompt: true }).catch(console.error);
-    } else if (callOrText === 'Texted') {
-      SendSMS.send(
-        {
-          body: '',
-          recipients: [contact.number],
-          successTypes: ['sent', 'queued'],
-        },
-        (completed, cancelled, error) => {
-          console.log(
-            `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
-          );
-        }
-      );
-    }
-
+  updateReminder = reminderToUpdate => {
     const { reminders } = this.state;
     const remindersCopy = reminders != null ? reminders.slice() : [];
-    const matchingIndex = remindersCopy.indexOf(contact);
-    remindersCopy[matchingIndex].lastContact = `${callOrText} on ${nowLocalized}`;
+
+    const matchingIndex = remindersCopy.findIndex(
+      reminder => reminder.name === reminderToUpdate.name
+    );
+    remindersCopy[matchingIndex] = reminderToUpdate;
     this.saveReminderData(remindersCopy).catch(error => {
       console.log(error);
     });
-  }
+  };
 
-  deleteReminder(contactToBeDeleted) {
+  deleteReminder = contactToBeDeleted => {
     const { reminders } = this.state;
 
     if (reminders != null && reminders.length > 0) {
@@ -201,7 +181,7 @@ export default class Main extends Component {
           console.log(error);
         });
     }
-  }
+  };
 
   async retrieveReminders() {
     try {
@@ -243,12 +223,9 @@ export default class Main extends Component {
           data={reminders}
           renderItem={({ item }) => (
             <Reminder
-              name={item.name}
-              lastContact={item.lastContact}
-              repeatString={item.repeatString}
-              onPressCall={() => this.reminderContacted(item, 'Called')}
-              onPressText={() => this.reminderContacted(item, 'Texted')}
-              onDelete={() => this.deleteReminder(item)}
+              reminder={item}
+              parentCallbackUpdateReminder={this.updateReminder}
+              parentCallbackDeleteReminder={this.deleteReminder}
             />
           )}
           keyExtractor={item => item.name}

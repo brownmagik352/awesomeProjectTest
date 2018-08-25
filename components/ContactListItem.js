@@ -39,7 +39,7 @@ export default class ContactListItem extends Component {
       id,
       repeatString,
       startDateString,
-      lastContactString: '',
+      lastContact: '',
     });
   };
 

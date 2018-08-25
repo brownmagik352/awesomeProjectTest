@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import call from 'react-native-phone-call';
+import SendSMS from 'react-native-sms';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   singleRow: {
@@ -10,29 +13,52 @@ const styles = StyleSheet.create({
 });
 
 export default class Reminder extends Component {
+  callOrText(callOrTextPressed) {
+    const { reminder, parentCallbackUpdateReminder } = this.props;
+    const reminderToUpdate = Object.assign({}, reminder);
+    const nowLocalized = moment().format('MMMM Do YYYY');
+
+    if (callOrTextPressed === 'Called') {
+      call({ number: reminder.number, prompt: true }).catch(console.error);
+    } else if (callOrTextPressed === 'Texted') {
+      SendSMS.send(
+        {
+          body: '',
+          recipients: [reminder.number],
+          successTypes: ['sent', 'queued'],
+        },
+        (completed, cancelled, error) => {
+          console.log(
+            `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
+          );
+        }
+      );
+    }
+
+    reminderToUpdate.lastContact = `${callOrTextPressed} on ${nowLocalized}`;
+    parentCallbackUpdateReminder(reminderToUpdate);
+  }
+
   render() {
-    const { name, lastContact, onPressCall, onPressText, repeatString, onDelete } = this.props;
+    const { reminder, parentCallbackDeleteReminder } = this.props;
     return (
       <View>
         <View style={styles.singleRow}>
           <Text>
-            {name} - {repeatString}
+            {reminder.name} - {reminder.repeatString}
           </Text>
-          <Button title="Call" onPress={() => onPressCall()} />
-          <Button title="Text" onPress={() => onPressText()} />
-          <Button title="X" onPress={() => onDelete()} />
+          <Button title="Call" onPress={() => this.callOrText('Called')} />
+          <Button title="Text" onPress={() => this.callOrText('Texted')} />
+          <Button title="X" onPress={() => parentCallbackDeleteReminder(reminder)} />
         </View>
-        <Text>{lastContact}</Text>
+        <Text>{reminder.lastContact}</Text>
       </View>
     );
   }
 }
 
 Reminder.propTypes = {
-  name: PropTypes.string.isRequired,
-  lastContact: PropTypes.string.isRequired,
-  repeatString: PropTypes.string.isRequired,
-  onPressCall: PropTypes.func.isRequired,
-  onPressText: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  reminder: PropTypes.object.isRequired,
+  parentCallbackUpdateReminder: PropTypes.func.isRequired,
+  parentCallbackDeleteReminder: PropTypes.func.isRequired,
 };
