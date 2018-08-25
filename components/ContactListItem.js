@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 
 export default class ContactListItem extends Component {
   state = {
+    // modal & picker variables
     modalVisible: false,
     repeatString: 'Every day',
     startDateString: 'One day from now',

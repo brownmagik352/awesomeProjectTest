@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Button, AsyncStorage, Alert } from 'react-native';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Button,
+  AsyncStorage,
+  Alert,
+  TextInput,
+  Modal,
+} from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
 import ContactListItem from './ContactListItem';
@@ -16,8 +25,11 @@ export default class Main extends Component {
     super(props);
     this.state = {
       reminders: [],
-      contactListVisible: false,
       contacts: [],
+
+      // contacts searching variables
+      contactSearchVisible: false,
+      scopedContacts: [],
     };
   }
 
@@ -130,16 +142,18 @@ export default class Main extends Component {
     return false;
   }
 
-  toggleContactListVisible() {
-    const { contactListVisible } = this.state;
-    if (contactListVisible) {
-      this.setState({ contactListVisible: false });
-    } else {
-      this.setState({ contactListVisible: true });
-    }
+  updateSearch(searchText) {
+    const { contacts } = this.state;
+    const serachTextLowerCase = searchText.toLowerCase();
+    const scopedContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().match(serachTextLowerCase)
+    );
+
+    this.setState({ scopedContacts });
   }
 
   addReminder = contactToAdd => {
+    this.setState({ contactSearchVisible: false });
     const { reminders } = this.state;
     const remindersCopy = reminders != null ? reminders.slice() : [];
 
@@ -236,7 +250,7 @@ export default class Main extends Component {
   }
 
   render() {
-    const { reminders, contactListVisible, contacts } = this.state;
+    const { reminders, scopedContacts, contactSearchVisible } = this.state;
     return (
       <View style={styles.container}>
         <Button title="DEBUG WIPE DATA" onPress={() => this.testReset()} />
@@ -251,21 +265,37 @@ export default class Main extends Component {
           )}
           keyExtractor={item => item.name}
         />
-        <Button title="Show/Hide Contacts " onPress={() => this.toggleContactListVisible()} />
+        <Button
+          title="Add Reminder"
+          onPress={() => this.setState({ contactSearchVisible: true })}
+        />
 
-        {contactListVisible && (
-          <FlatList
-            data={contacts}
-            renderItem={({ item }) => (
-              <ContactListItem
-                name={item.name}
-                number={item.number}
-                id={this.getNewReminderId()}
-                parentCallbackHandleContactPress={this.addReminder}
-              />
-            )}
-          />
-        )}
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={contactSearchVisible}
+          onRequestClose={() => {
+            this.setState({ contactSearchVisible: false });
+          }}
+        >
+          <View>
+            <TextInput
+              onChangeText={searchtext => this.updateSearch(searchtext)}
+              placeholder="Search your contacts"
+            />
+            <FlatList
+              data={scopedContacts}
+              renderItem={({ item }) => (
+                <ContactListItem
+                  name={item.name}
+                  number={item.number}
+                  id={this.getNewReminderId()}
+                  parentCallbackHandleContactPress={this.addReminder}
+                />
+              )}
+            />
+          </View>
+        </Modal>
       </View>
     );
   }
