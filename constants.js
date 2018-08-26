@@ -5,6 +5,7 @@ export const mapStartDateStringToStartDateDate = {
   'In four days': 4,
   'In five days': 5,
   'In six days': 6,
+  'In one week': 7,
 };
 
 export const mapRepeatStringToRepeatTime = {
