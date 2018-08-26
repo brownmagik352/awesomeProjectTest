@@ -122,7 +122,7 @@ export default class Main extends Component {
 
     // check if name in reminders already
     for (let i = 0; i < reminders.length; i += 1) {
-      if (reminders[i].name === contactToAdd.name || reminders[i].number === contactToAdd.number) {
+      if (reminders[i].name === contactToAdd.name && reminders[i].number === contactToAdd.number) {
         Alert.alert(
           `You already have a reminder set for ${contactToAdd.name} (${contactToAdd.number})`
         );

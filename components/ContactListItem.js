@@ -25,7 +25,7 @@ export default class ContactListItem extends Component {
     modalVisible: false,
     repeatString: Object.keys(mapRepeatStringToRepeatTime)[0],
     startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
-    number: '',
+    number: this.props.phoneNumbers.length > 0 ? this.props.phoneNumbers[0].number : '',
   };
 
   // create Picker.item for phoneNumbers
@@ -37,6 +37,7 @@ export default class ContactListItem extends Component {
       // only unique numbers
       if (!numberStringsUnique.includes(n)) numberStringsUnique.push(n);
     }
+
     return numberStringsUnique.map(number => (
       <Picker.Item label={number} value={number} key={number} />
     ));
