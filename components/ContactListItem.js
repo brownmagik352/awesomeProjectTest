@@ -10,6 +10,7 @@ import {
   Picker,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { mapRepeatStringToRepeatTime, mapStartDateStringToStartDateDate } from '../constants';
 
 const styles = StyleSheet.create({
   singleRow: {
@@ -22,8 +23,8 @@ export default class ContactListItem extends Component {
   state = {
     // modal & picker variables
     modalVisible: false,
-    repeatString: 'Every day',
-    startDateString: 'One day from now',
+    repeatString: Object.keys(mapRepeatStringToRepeatTime)[0],
+    startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
     number: '',
   };
 
@@ -36,9 +37,23 @@ export default class ContactListItem extends Component {
       // only unique numbers
       if (!numberStringsUnique.includes(n)) numberStringsUnique.push(n);
     }
-    return numberStringsUnique.map((number, index) => (
-      <Picker.Item label={number} value={number} key={`${number} (${index})`} />
+    return numberStringsUnique.map(number => (
+      <Picker.Item label={number} value={number} key={number} />
     ));
+  }
+
+  static createPickerForStartDate() {
+    const daysFromNow = Object.keys(mapStartDateStringToStartDateDate);
+    /* TESTING ONLY */
+    daysFromNow.push('test');
+    return daysFromNow.map(s => <Picker.Item label={s} value={s} key={s} />);
+  }
+
+  static createPickerForRepeatTime() {
+    const recurringTimes = Object.keys(mapRepeatStringToRepeatTime);
+    /* TESTING ONLY */
+    recurringTimes.push('test');
+    return recurringTimes.map(s => <Picker.Item label={s} value={s} key={s} />);
   }
 
   setModalVisible(visible) {
@@ -94,25 +109,14 @@ export default class ContactListItem extends Component {
               selectedValue={startDateString}
               onValueChange={itemValue => this.setState({ startDateString: itemValue })}
             >
-              <Picker.Item label="One day from now" value="One day from now" />
-              <Picker.Item label="Two days from now" value="Two days from now" />
-              <Picker.Item label="Three days from now" value="Three days from now" />
-              <Picker.Item label="Four days from now" value="Four days from now" />
-              <Picker.Item label="Five days from now" value="Five days from now" />
-              <Picker.Item label="Six days from now" value="Six days from now" />
-              <Picker.Item label="test" value="test" />
+              {ContactListItem.createPickerForStartDate()}
             </Picker>
 
             <Picker
               selectedValue={repeatString}
               onValueChange={itemValue => this.setState({ repeatString: itemValue })}
             >
-              <Picker.Item label="Every day" value="Every day" />
-              <Picker.Item label="Every week" value="Every week" />
-              <Picker.Item label="Every two weeks" value="Every two weeks" />
-              <Picker.Item label="Every three weeks" value="Every three weeks" />
-              <Picker.Item label="Every four weeks" value="Every four weeks" />
-              <Picker.Item label="test" value="test" />
+              {ContactListItem.createPickerForRepeatTime()}
             </Picker>
             <Button title="Add" onPress={this.handlePress} />
           </View>

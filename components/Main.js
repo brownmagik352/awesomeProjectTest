@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
+import { mapRepeatStringToRepeatTime, mapStartDateStringToStartDateDate } from '../constants';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
 
@@ -53,15 +54,6 @@ export default class Main extends Component {
   }
 
   static getStartDate(startDateString) {
-    const mapStartDateStringToStartDateDate = {
-      'One day from now': 1,
-      'Two days from now': 2,
-      'Three days from now': 3,
-      'Four days from now': 4,
-      'Five days from now': 5,
-      'Six days from now': 6,
-    };
-
     /* TESTING ONLY */
     if (startDateString === 'test') return new Date(Date.now() + 5 * 1000);
 
@@ -75,13 +67,6 @@ export default class Main extends Component {
 
   static getRepeatTime(repeatString) {
     const oneDayMilliseconds = 1000 * 60 * 60 * 24;
-    const mapRepeatStringToRepeatTime = {
-      'Every day': 1,
-      'Every week': 7,
-      'Every two weeks': 14,
-      'Every three weeks': 21,
-      'Every four weeks': 28,
-    };
 
     /* TESTING ONLY */
     if (repeatString === 'test') return 5 * 1000;
