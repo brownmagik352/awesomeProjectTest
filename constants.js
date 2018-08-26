@@ -1,16 +1,16 @@
 export const mapStartDateStringToStartDateDate = {
-  'One day from now': 1,
-  'Two days from now': 2,
-  'Three days from now': 3,
-  'Four days from now': 4,
-  'Five days from now': 5,
-  'Six days from now': 6,
+  Tomorrow: 1,
+  'In two days': 2,
+  'In three days': 3,
+  'In four days': 4,
+  'In five days': 5,
+  'In six days': 6,
 };
 
 export const mapRepeatStringToRepeatTime = {
-  'Every day': 1,
-  'Every week': 7,
-  'Every two weeks': 14,
+  Daily: 1,
+  Weekly: 7,
+  'Every other week': 14,
   'Every three weeks': 21,
-  'Every four weeks': 28,
+  Monthly: 28,
 };

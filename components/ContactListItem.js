@@ -23,8 +23,8 @@ export default class ContactListItem extends Component {
   state = {
     // modal & picker variables
     modalVisible: false,
-    repeatString: Object.keys(mapRepeatStringToRepeatTime)[0],
     startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
+    repeatString: Object.keys(mapRepeatStringToRepeatTime)[1],
     number: this.props.phoneNumbers.length > 0 ? this.props.phoneNumbers[0].number : '',
   };
 
@@ -64,20 +64,20 @@ export default class ContactListItem extends Component {
   handlePress = () => {
     this.setModalVisible(false);
     const { parentCallbackHandleContactPress, name, id } = this.props;
-    const { repeatString, startDateString, number } = this.state;
+    const { startDateString, repeatString, number } = this.state;
     parentCallbackHandleContactPress({
       name,
       number,
       id,
-      repeatString,
       startDateString,
+      repeatString,
       lastContact: '',
     });
   };
 
   render() {
     const { name, phoneNumbers } = this.props;
-    const { modalVisible, repeatString, startDateString, number } = this.state;
+    const { modalVisible, startDateString, repeatString, number } = this.state;
 
     return (
       <View style={styles.singleRow}>
