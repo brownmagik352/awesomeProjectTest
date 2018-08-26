@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
@@ -14,17 +14,18 @@ const styles = StyleSheet.create({
   reminderTopRow: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   reminderName: {
-    flex: 6,
     fontSize: 24,
   },
-  reminderActions: {
-    flex: 4,
+  reminderActionGroup: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+  reminderActions: {
     height: 36,
-    marginLeft: 5,
+    marginRight: 15,
   },
   reminderBottomRow: {},
   reminderExtraInfo: {
@@ -59,8 +60,17 @@ export default class Reminder extends Component {
     parentCallbackUpdateReminder(reminderToUpdate);
   }
 
-  render() {
+  optionsDialog() {
     const { reminder, parentCallbackDeleteReminder } = this.props;
+    Alert.alert(reminder.name, reminder.number, [
+      { text: 'Delete', onPress: () => parentCallbackDeleteReminder(reminder) },
+      { text: 'Text', onPress: () => this.callOrText('Texted') },
+      { text: 'Call', onPress: () => this.callOrText('Texted') },
+    ]);
+  }
+
+  render() {
+    const { reminder } = this.props;
     let contactString;
     if (reminder.lastContact.length > 0) {
       contactString = `(${reminder.lastContact})`;
@@ -68,11 +78,20 @@ export default class Reminder extends Component {
     return (
       <View style={styles.reminder}>
         <View style={styles.reminderTopRow}>
-          <Text style={styles.reminderName}>{reminder.name}</Text>
-          <View style={styles.reminderActions}>
-            <Button title="Call" onPress={() => this.callOrText('Called')} />
-            <Button title="Text" onPress={() => this.callOrText('Texted')} />
-            <Button title="X" onPress={() => parentCallbackDeleteReminder(reminder)} />
+          <TouchableOpacity onPress={() => this.optionsDialog()}>
+            <Text style={styles.reminderName}>{reminder.name}</Text>
+          </TouchableOpacity>
+          <View style={styles.reminderActionGroup}>
+            <Button
+              style={styles.reminderActions}
+              title="Call"
+              onPress={() => this.callOrText('Called')}
+            />
+            <Button
+              style={styles.reminderActions}
+              title="Text"
+              onPress={() => this.callOrText('Texted')}
+            />
           </View>
         </View>
 
