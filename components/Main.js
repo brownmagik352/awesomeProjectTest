@@ -17,7 +17,19 @@ import Reminder from './Reminder';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    marginTop: 25,
+  },
+  reminderList: {
+    marginTop: 15,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  topActions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  addReminderButton: {
+    width: 25,
   },
 });
 
@@ -216,8 +228,15 @@ export default class Main extends Component {
     const { reminders, scopedContacts, contactSearchVisible } = this.state;
     return (
       <View style={styles.container}>
-        <Button title="DEBUG WIPE DATA" onPress={() => this.testReset()} />
+        <View style={styles.topActions}>
+          <Button
+            style={styles.addReminderButton}
+            title="Add Reminder"
+            onPress={() => this.setState({ contactSearchVisible: true })}
+          />
+        </View>
         <FlatList
+          style={styles.reminderList}
           data={reminders}
           renderItem={({ item }) => (
             <Reminder
@@ -227,10 +246,6 @@ export default class Main extends Component {
             />
           )}
           keyExtractor={item => item.name}
-        />
-        <Button
-          title="Add Reminder"
-          onPress={() => this.setState({ contactSearchVisible: true })}
         />
 
         <Modal

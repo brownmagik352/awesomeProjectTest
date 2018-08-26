@@ -6,9 +6,29 @@ import SendSMS from 'react-native-sms';
 import moment from 'moment';
 
 const styles = StyleSheet.create({
-  singleRow: {
+  reminder: {
+    marginTop: 10,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+  reminderTopRow: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  },
+  reminderName: {
+    flex: 6,
+    fontSize: 24,
+  },
+  reminderActions: {
+    flex: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 36,
+    marginLeft: 5,
+  },
+  reminderBottomRow: {},
+  reminderExtraInfo: {
+    fontSize: 12,
   },
 });
 
@@ -41,17 +61,26 @@ export default class Reminder extends Component {
 
   render() {
     const { reminder, parentCallbackDeleteReminder } = this.props;
+    let contactString;
+    if (reminder.lastContact.length > 0) {
+      contactString = `(${reminder.lastContact})`;
+    }
     return (
-      <View>
-        <View style={styles.singleRow}>
-          <Text>
-            {reminder.name} - {reminder.repeatString}
-          </Text>
-          <Button title="Call" onPress={() => this.callOrText('Called')} />
-          <Button title="Text" onPress={() => this.callOrText('Texted')} />
-          <Button title="X" onPress={() => parentCallbackDeleteReminder(reminder)} />
+      <View style={styles.reminder}>
+        <View style={styles.reminderTopRow}>
+          <Text style={styles.reminderName}>{reminder.name}</Text>
+          <View style={styles.reminderActions}>
+            <Button title="Call" onPress={() => this.callOrText('Called')} />
+            <Button title="Text" onPress={() => this.callOrText('Texted')} />
+            <Button title="X" onPress={() => parentCallbackDeleteReminder(reminder)} />
+          </View>
         </View>
-        <Text>{reminder.lastContact}</Text>
+
+        <View style={styles.reminderBottomRow}>
+          <Text style={styles.reminderExtraInfo}>
+            {reminder.repeatString} {contactString}
+          </Text>
+        </View>
       </View>
     );
   }
