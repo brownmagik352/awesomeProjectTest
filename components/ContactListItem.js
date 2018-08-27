@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Button,
-  Alert,
-  Picker,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Button, Picker } from 'react-native';
 import PropTypes from 'prop-types';
 import {
   mapRepeatStringToRepeatTime,
@@ -16,12 +7,10 @@ import {
   sharedStyles,
 } from '../constants';
 
-const styles = StyleSheet.create({});
-
 export default class ContactListItem extends Component {
   state = {
     // modal & picker variables
-    modalVisible: false,
+    pickerVisible: false,
     startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
     repeatString: Object.keys(mapRepeatStringToRepeatTime)[1],
     number: this.props.phoneNumbers.length > 0 ? this.props.phoneNumbers[0].number : '',
@@ -56,12 +45,8 @@ export default class ContactListItem extends Component {
     return recurringTimes.map(s => <Picker.Item label={s} value={s} key={s} />);
   }
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-
   handlePress = () => {
-    this.setModalVisible(false);
+    this.setState({ pickerVisible: true });
     const { parentCallbackHandleContactPress, name, id } = this.props;
     const { startDateString, repeatString, number } = this.state;
     parentCallbackHandleContactPress({
@@ -76,31 +61,22 @@ export default class ContactListItem extends Component {
 
   render() {
     const { name, phoneNumbers } = this.props;
-    const { modalVisible, startDateString, repeatString, number } = this.state;
+    const { pickerVisible, startDateString, repeatString, number } = this.state;
 
     return (
       <View>
         <View style={sharedStyles.listItemContainer}>
           <TouchableOpacity
             onPress={() => {
-              this.setModalVisible(true);
+              this.setState({ pickerVisible: !pickerVisible });
             }}
           >
             <Text style={sharedStyles.listItemText}>{name}</Text>
           </TouchableOpacity>
         </View>
 
-        <Modal
-          animationType="fade"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Reminder Not Set');
-            this.setModalVisible(false);
-          }}
-        >
+        {pickerVisible && (
           <View>
-            <Text>Set reminder for {name}:</Text>
             <Picker
               selectedValue={number}
               onValueChange={itemValue => this.setState({ number: itemValue })}
@@ -122,7 +98,7 @@ export default class ContactListItem extends Component {
             </Picker>
             <Button title="Add" onPress={this.handlePress} />
           </View>
-        </Modal>
+        )}
       </View>
     );
   }
