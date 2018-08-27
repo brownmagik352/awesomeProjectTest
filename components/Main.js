@@ -96,6 +96,8 @@ export default class Main extends Component {
     });
 
     this.setState({ contacts });
+    // helps user to see their contact list up front before they start searching
+    this.setState({ scopedContacts: contacts });
   }
 
   // assigns a new random ID
@@ -124,7 +126,11 @@ export default class Main extends Component {
       contact.name.toLowerCase().match(serachTextLowerCase)
     );
 
-    this.setState({ scopedContacts });
+    if (searchText === '') {
+      this.setState({ scopedContacts: contacts });
+    } else {
+      this.setState({ scopedContacts });
+    }
   }
 
   addReminder = contactToAdd => {
