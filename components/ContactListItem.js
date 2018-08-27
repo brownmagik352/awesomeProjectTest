@@ -8,13 +8,17 @@ import {
 } from '../constants';
 
 export default class ContactListItem extends Component {
-  state = {
-    // modal & picker variables
-    pickerVisible: false,
-    startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
-    repeatString: Object.keys(mapRepeatStringToRepeatTime)[1],
-    number: this.props.phoneNumbers.length > 0 ? this.props.phoneNumbers[0].number : '',
-  };
+  constructor(props) {
+    super(props);
+    const { phoneNumbers } = this.props;
+    this.state = {
+      // modal & picker variables
+      pickerVisible: false,
+      number: phoneNumbers.length > 0 ? phoneNumbers[0].number : '',
+      startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
+      repeatString: Object.keys(mapRepeatStringToRepeatTime)[1],
+    };
+  }
 
   // create Picker.item for phoneNumbers
   static createPickerForPhoneNumbers(phoneNumbers) {
