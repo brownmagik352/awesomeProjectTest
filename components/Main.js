@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 25,
   },
-  reminderList: {
+  listMargins: {
     marginTop: 15,
     marginLeft: 10,
     marginRight: 10,
@@ -236,7 +236,7 @@ export default class Main extends Component {
           />
         </View>
         <FlatList
-          style={styles.reminderList}
+          style={styles.listMargins}
           data={reminders}
           renderItem={({ item }) => (
             <Reminder
@@ -256,7 +256,7 @@ export default class Main extends Component {
             this.setState({ contactSearchVisible: false });
           }}
         >
-          <View>
+          <View style={styles.listMargins}>
             <TextInput
               onChangeText={searchtext => this.updateSearch(searchtext)}
               placeholder="Search your contacts"

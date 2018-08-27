@@ -4,20 +4,13 @@ import PropTypes from 'prop-types';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
 import moment from 'moment';
+import { sharedStyles } from '../constants';
 
 const styles = StyleSheet.create({
-  reminder: {
-    marginTop: 10,
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-  },
   reminderTopRow: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  reminderName: {
-    fontSize: 24,
   },
   reminderActionGroup: {
     flexDirection: 'row',
@@ -27,7 +20,6 @@ const styles = StyleSheet.create({
     height: 36,
     marginRight: 15,
   },
-  reminderBottomRow: {},
   reminderExtraInfo: {
     fontSize: 12,
   },
@@ -76,10 +68,10 @@ export default class Reminder extends Component {
       contactString = `(${reminder.lastContact})`;
     }
     return (
-      <View style={styles.reminder}>
+      <View style={sharedStyles.listItemContainer}>
         <View style={styles.reminderTopRow}>
           <TouchableOpacity onPress={() => this.optionsDialog()}>
-            <Text style={styles.reminderName}>{reminder.name}</Text>
+            <Text style={sharedStyles.listItemText}>{reminder.name}</Text>
           </TouchableOpacity>
           <View style={styles.reminderActionGroup}>
             <Button

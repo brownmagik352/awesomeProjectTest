@@ -10,14 +10,13 @@ import {
   Picker,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { mapRepeatStringToRepeatTime, mapStartDateStringToStartDateDate } from '../constants';
+import {
+  mapRepeatStringToRepeatTime,
+  mapStartDateStringToStartDateDate,
+  sharedStyles,
+} from '../constants';
 
-const styles = StyleSheet.create({
-  singleRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-});
+const styles = StyleSheet.create({});
 
 export default class ContactListItem extends Component {
   state = {
@@ -80,14 +79,16 @@ export default class ContactListItem extends Component {
     const { modalVisible, startDateString, repeatString, number } = this.state;
 
     return (
-      <View style={styles.singleRow}>
-        <TouchableOpacity
-          onPress={() => {
-            this.setModalVisible(true);
-          }}
-        >
-          <Text>{name}</Text>
-        </TouchableOpacity>
+      <View>
+        <View style={sharedStyles.listItemContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setModalVisible(true);
+            }}
+          >
+            <Text style={sharedStyles.listItemText}>{name}</Text>
+          </TouchableOpacity>
+        </View>
 
         <Modal
           animationType="fade"

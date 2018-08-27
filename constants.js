@@ -15,3 +15,14 @@ export const mapRepeatStringToRepeatTime = {
   'Every three weeks': 21,
   Monthly: 28,
 };
+
+export const sharedStyles = {
+  listItemText: {
+    fontSize: 24,
+  },
+  listItemContainer: {
+    marginTop: 10,
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+};
