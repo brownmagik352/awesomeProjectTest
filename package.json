@@ -14,7 +14,8 @@
     "react-native-contacts": "^2.2.1",
     "react-native-phone-call": "^1.0.7",
     "react-native-push-notification": "3.0.2",
-    "react-native-sms": "^1.6.0"
+    "react-native-sms": "^1.6.0",
+    "rollbar-react-native": "^0.3.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",

@@ -26,3 +26,5 @@ export const sharedStyles = {
     borderBottomWidth: 1,
   },
 };
+
+export const rollbarKey = 'fc49b7778b5e44d387ca4005cd43726d';

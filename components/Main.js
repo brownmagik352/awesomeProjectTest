@@ -11,9 +11,16 @@ import {
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
-import { mapRepeatStringToRepeatTime, mapStartDateStringToStartDateDate } from '../constants';
+import Client from 'rollbar-react-native';
+import {
+  mapRepeatStringToRepeatTime,
+  mapStartDateStringToStartDateDate,
+  rollbarKey,
+} from '../constants';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
+
+const rollbar = new Client(rollbarKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -49,7 +56,9 @@ export default class Main extends Component {
   componentDidMount() {
     // get contacts list
     Contacts.getAll((err, contacts) => {
-      if (err) throw err;
+      if (err) {
+        rollbar.log(`Error getting contacts (${err})`);
+      }
 
       this.contactsListPrep(contacts);
     });
@@ -161,8 +170,8 @@ export default class Main extends Component {
         })
       )
       .catch(error => {
-        Alert.alert(`Error deleting reminder for ${contactToAdd.name}`);
-        console.log(error);
+        Alert.alert(`Error adding reminder for ${contactToAdd.name}`);
+        rollbar.log(`Error adding reminder (${error})`);
       });
   };
 
@@ -175,7 +184,7 @@ export default class Main extends Component {
     );
     remindersCopy[matchingIndex] = reminderToUpdate;
     this.saveReminderData(remindersCopy).catch(error => {
-      console.log(error);
+      rollbar.log(`Error updating reminder (${error})`);
     });
   };
 
@@ -193,7 +202,7 @@ export default class Main extends Component {
         .then(PushNotification.cancelLocalNotifications({ id: `${contactToBeDeleted.id}` }))
         .catch(error => {
           Alert.alert(`Error deleting reminder for ${contactToBeDeleted.name}`);
-          console.log(error);
+          rollbar.log(`Error deleting reminder (${error})`);
         });
     }
   };
@@ -206,7 +215,7 @@ export default class Main extends Component {
       this.setState({ reminders });
     } catch (error) {
       Alert.alert('Error loading saved reminders');
-      console.log(error);
+      rollbar.log(`Error loading saved reminders (${error})`);
       this.setState({ reminders: [] });
     }
   }
@@ -219,7 +228,7 @@ export default class Main extends Component {
       this.setState({ reminders: updatedReminders });
     } catch (error) {
       Alert.alert('Error saving reminders');
-      console.log(error);
+      rollbar.log(`Error saving reminders (${error})`);
     }
   }
 

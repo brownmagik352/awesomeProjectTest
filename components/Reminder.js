@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
 import moment from 'moment';
-import { sharedStyles } from '../constants';
+import Client from 'rollbar-react-native';
+import { sharedStyles, rollbarKey } from '../constants';
+
+const rollbar = new Client(rollbarKey);
 
 const styles = StyleSheet.create({
   reminderTopRow: {
@@ -32,7 +35,9 @@ export default class Reminder extends Component {
     const nowLocalized = moment().format('MMMM Do YYYY');
 
     if (callOrTextPressed === 'Called') {
-      call({ number: reminder.number, prompt: true }).catch(console.error);
+      call({ number: reminder.number, prompt: true }).catch(error =>
+        rollbar.log(`Error making call (${error})`)
+      );
     } else if (callOrTextPressed === 'Texted') {
       SendSMS.send(
         {
@@ -41,9 +46,7 @@ export default class Reminder extends Component {
           successTypes: ['sent', 'queued'],
         },
         (completed, cancelled, error) => {
-          console.log(
-            `SMS Callback: completed: ${completed} cancelled: ${cancelled}error: ${error}`
-          );
+          rollbar.log(`Error making text reminder (${error})`);
         }
       );
     }

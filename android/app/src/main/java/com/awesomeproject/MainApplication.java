@@ -3,6 +3,7 @@ package com.awesomeproject;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rollbar.RollbarReactNative;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.facebook.react.ReactNativeHost;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            RollbarReactNative.getPackage(),
             new ReactNativePushNotificationPackage(),
             new ReactNativeContacts(),
             SendSMSPackage.getInstance() //react-native-sms
@@ -47,5 +49,6 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    RollbarReactNative.init(this, "fc49b7778b5e44d387ca4005cd43726d", "production");
   }
 }
