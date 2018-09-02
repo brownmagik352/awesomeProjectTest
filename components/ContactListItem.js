@@ -16,7 +16,7 @@ export default class ContactListItem extends Component {
       pickerVisible: false,
       number: phoneNumbers.length > 0 ? phoneNumbers[0].number : '',
       startDateString: Object.keys(mapStartDateStringToStartDateDate)[0],
-      repeatString: Object.keys(mapRepeatStringToRepeatTime)[1],
+      repeatString: Object.keys(mapRepeatStringToRepeatTime)[2],
     };
   }
 
@@ -37,15 +37,11 @@ export default class ContactListItem extends Component {
 
   static createPickerForStartDate() {
     const daysFromNow = Object.keys(mapStartDateStringToStartDateDate);
-    /* TESTING ONLY */
-    daysFromNow.push('test');
     return daysFromNow.map(s => <Picker.Item label={s} value={s} key={s} />);
   }
 
   static createPickerForRepeatTime() {
     const recurringTimes = Object.keys(mapRepeatStringToRepeatTime);
-    /* TESTING ONLY */
-    recurringTimes.push('test');
     return recurringTimes.map(s => <Picker.Item label={s} value={s} key={s} />);
   }
 

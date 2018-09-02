@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import call from 'react-native-phone-call';
 import SendSMS from 'react-native-sms';
 import moment from 'moment';
-import Client from 'rollbar-react-native';
+import { Client } from 'rollbar-react-native';
 import { sharedStyles, rollbarKey } from '../constants';
 
 const rollbar = new Client(rollbarKey);

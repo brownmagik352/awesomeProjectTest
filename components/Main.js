@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
-import Client from 'rollbar-react-native';
+import { Client } from 'rollbar-react-native';
 import {
   mapRepeatStringToRepeatTime,
   mapStartDateStringToStartDateDate,
@@ -81,23 +81,20 @@ export default class Main extends Component {
   }
 
   static getStartDate(startDateString) {
-    /* TESTING ONLY */
-    if (startDateString === 'test') return new Date(Date.now() + 5 * 1000);
-
     const today = new Date();
     const firstDate = new Date(today);
     firstDate.setDate(today.getDate() + mapStartDateStringToStartDateDate[startDateString]);
-    // normalize to noon, allow for min/s/ms variation so as to not get bombarded
-    firstDate.setHours(12);
+    if (mapStartDateStringToStartDateDate[startDateString] === 0) {
+      firstDate.setHours(today.getHours() + 1);
+    } else {
+      // normalize to noon, allow for min/s/ms variation so as to not get bombarded
+      firstDate.setHours(12);
+    }
     return firstDate;
   }
 
   static getRepeatTime(repeatString) {
     const oneDayMilliseconds = 1000 * 60 * 60 * 24;
-
-    /* TESTING ONLY */
-    if (repeatString === 'test') return 5 * 1000;
-
     return mapRepeatStringToRepeatTime[repeatString] * oneDayMilliseconds;
   }
 

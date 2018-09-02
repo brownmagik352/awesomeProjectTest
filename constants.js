@@ -1,4 +1,5 @@
 export const mapStartDateStringToStartDateDate = {
+  'In one hour': 0,
   Tomorrow: 1,
   'In two days': 2,
   'In three days': 3,
@@ -10,9 +11,9 @@ export const mapStartDateStringToStartDateDate = {
 
 export const mapRepeatStringToRepeatTime = {
   Daily: 1,
+  'Every other day': 2,
   Weekly: 7,
   'Every other week': 14,
-  'Every three weeks': 21,
   Monthly: 28,
 };
 
@@ -27,4 +28,4 @@ export const sharedStyles = {
   },
 };
 
-export const rollbarKey = 'fc49b7778b5e44d387ca4005cd43726d';
+export const rollbarKey = 'f3dfe579275149508edbf8ad8c728d28';
