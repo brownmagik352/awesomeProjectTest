@@ -58,13 +58,19 @@ export default class Main extends Component {
     Contacts.getAll((err, contacts) => {
       if (err) {
         rollbar.log(`Error getting contacts (${err})`);
+        Alert.alert(
+          `Couldn't load your contacts. You won't be able to create new reminders.\nPlease allow KeepInTouch to access your contacts.`
+        );
       }
 
       this.contactsListPrep(contacts);
     });
 
     // get stored reminders
-    this.retrieveReminders();
+    this.retrieveReminders().catch(error => {
+      Alert.alert('Error loading saved reminders');
+      rollbar.log(`Error loading saved reminders (${error})`);
+    });
   }
 
   // TODO: handle getting name in all cases (names missing etc.)
@@ -208,28 +214,17 @@ export default class Main extends Component {
   };
 
   async retrieveReminders() {
-    try {
-      const storedReminders = await AsyncStorage.getItem('reminders');
-      let reminders = JSON.parse(storedReminders);
-      if (reminders == null) reminders = [];
-      this.setState({ reminders });
-    } catch (error) {
-      Alert.alert('Error loading saved reminders');
-      rollbar.log(`Error loading saved reminders (${error})`);
-      this.setState({ reminders: [] });
-    }
+    const storedReminders = await AsyncStorage.getItem('reminders');
+    let reminders = JSON.parse(storedReminders);
+    if (reminders == null) reminders = [];
+    this.setState({ reminders });
   }
 
   async saveReminderData(updatedReminders) {
-    try {
-      // update stored data
-      await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
-      // update state
-      this.setState({ reminders: updatedReminders });
-    } catch (error) {
-      Alert.alert('Error saving reminders');
-      rollbar.log(`Error saving reminders (${error})`);
-    }
+    // update stored data
+    await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
+    // update state
+    this.setState({ reminders: updatedReminders });
   }
 
   /* TESTING ONLY */
