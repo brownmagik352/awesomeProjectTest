@@ -12,6 +12,7 @@ import {
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
 import { Client } from 'rollbar-react-native';
+import SplashScreen from 'react-native-splash-screen';
 import {
   mapRepeatStringToRepeatTime,
   mapStartDateStringToStartDateDate,
@@ -54,6 +55,7 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
+    SplashScreen.hide();
     // get contacts list
     Contacts.getAll((err, contacts) => {
       if (err) {
