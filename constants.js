@@ -28,4 +28,4 @@ export const sharedStyles = {
   },
 };
 
-export const rollbarKey = 'f3dfe579275149508edbf8ad8c728d28';
+export const rollbarKey = 'fc49b7778b5e44d387ca4005cd43726d';
