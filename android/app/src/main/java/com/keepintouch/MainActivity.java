@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.keepintouch;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
@@ -15,7 +15,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "AwesomeProject";
+        return "KeepInTouch";
     }
 
     // react-native-sms

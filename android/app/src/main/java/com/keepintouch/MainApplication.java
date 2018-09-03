@@ -1,4 +1,4 @@
-package com.awesomeproject;
+package com.keepintouch;
 
 import android.app.Application;
 
