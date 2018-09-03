@@ -79,11 +79,13 @@ export default class Reminder extends Component {
           <View style={styles.reminderActionGroup}>
             <Button
               style={styles.reminderActions}
+              color={sharedStyles.actionButton.color}
               title="Call"
               onPress={() => this.callOrText('Called')}
             />
             <Button
               style={styles.reminderActions}
+              color={sharedStyles.actionButton.color}
               title="Text"
               onPress={() => this.callOrText('Texted')}
             />

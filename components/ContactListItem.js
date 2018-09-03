@@ -96,7 +96,11 @@ export default class ContactListItem extends Component {
             >
               {ContactListItem.createPickerForRepeatTime()}
             </Picker>
-            <Button title="Add" onPress={this.handlePress} />
+            <Button
+              color={sharedStyles.actionButton.color}
+              title="Add"
+              onPress={this.handlePress}
+            />
           </View>
         )}
       </View>

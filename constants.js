@@ -20,11 +20,15 @@ export const mapRepeatStringToRepeatTime = {
 export const sharedStyles = {
   listItemText: {
     fontSize: 24,
+    fontFamily: 'Helvetica',
   },
   listItemContainer: {
     marginTop: 10,
     borderBottomColor: 'black',
     borderBottomWidth: 1,
+  },
+  actionButton: {
+    color: '#4caf50',
   },
 };
 

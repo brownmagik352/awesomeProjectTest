@@ -19,6 +19,7 @@ import {
   mapRepeatStringToRepeatTime,
   mapStartDateStringToStartDateDate,
   rollbarKey,
+  sharedStyles,
 } from '../constants';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
@@ -265,6 +266,7 @@ export default class Main extends Component {
           <View style={styles.topActions}>
             <Button
               style={styles.addReminderButton}
+              color={sharedStyles.actionButton.color}
               title="Add Reminder"
               onPress={() => this.setState({ contactSearchVisible: true })}
             />
