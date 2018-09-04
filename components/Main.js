@@ -10,6 +10,7 @@ import {
   Modal,
   Image,
   Text,
+  PermissionsAndroid,
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
@@ -76,24 +77,53 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
-    // get contacts list
-    Contacts.getAll((err, contacts) => {
-      if (err) {
-        rollbar.log(`Error getting contacts (${err})`);
+    const allPermissions = [
+      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.SEND_SMS,
+      PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+    ];
+    PermissionsAndroid.requestMultiple(allPermissions)
+      .then(() => {
+        if (Main.allPermsGranted(allPermissions)) {
+          // get contacts list
+          Contacts.getAll((err, contacts) => {
+            if (err) {
+              rollbar.log(`Error getting contacts (${err})`);
+              Alert.alert(
+                `Couldn't load your contacts. You won't be able to create new reminders.\nPlease allow KeepInTouch to access your contacts.`
+              );
+            }
+
+            this.contactsListPrep(contacts);
+          });
+
+          // get stored reminders
+          this.retrieveReminders().catch(error => {
+            Alert.alert('Error loading saved reminders');
+            rollbar.log(`Error loading saved reminders (${error})`);
+          });
+
+          SplashScreen.hide();
+        } else {
+          rollbar.log(`Not all permissions granted`);
+          Alert.alert(`You must allow all permissions to use the app.`);
+        }
+      })
+      .catch(error => {
+        rollbar.log(`Error getting contacts (${error})`);
         Alert.alert(
-          `Couldn't load your contacts. You won't be able to create new reminders.\nPlease allow KeepInTouch to access your contacts.`
+          `Error with permissions. Please go to settings to grant necessary permissions for this app.`
         );
-      }
+      });
+  }
 
-      this.contactsListPrep(contacts);
-    });
-
-    // get stored reminders
-    this.retrieveReminders().catch(error => {
-      Alert.alert('Error loading saved reminders');
-      rollbar.log(`Error loading saved reminders (${error})`);
-    });
+  static allPermsGranted(perms) {
+    for (let i = 0; i < perms.length; i += 1) {
+      if (PermissionsAndroid.check(perms[i]) === PermissionsAndroid.RESULTS.DENIED) return false;
+    }
+    return true;
   }
 
   // TODO: handle getting name in all cases (names missing etc.)
