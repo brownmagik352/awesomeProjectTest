@@ -60,7 +60,7 @@ export default class Reminder extends Component {
     Alert.alert(reminder.name, reminder.number, [
       { text: 'Delete', onPress: () => parentCallbackDeleteReminder(reminder) },
       { text: 'Text', onPress: () => this.callOrText('Texted') },
-      { text: 'Call', onPress: () => this.callOrText('Texted') },
+      { text: 'Call', onPress: () => this.callOrText('Called') },
     ]);
   }
 
