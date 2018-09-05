@@ -11,11 +11,13 @@ import {
   Image,
   Text,
   PermissionsAndroid,
+  ScrollView,
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
 import { Client } from 'rollbar-react-native';
 import SplashScreen from 'react-native-splash-screen';
+import { AdMobBanner } from 'react-native-admob';
 import {
   mapRepeatStringToRepeatTime,
   mapStartDateStringToStartDateDate,
@@ -29,7 +31,7 @@ const rollbar = new Client(rollbarKey);
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
+    flex: 1,
   },
   listMargins: {
     marginTop: 20,
@@ -39,6 +41,7 @@ const styles = StyleSheet.create({
   topActions: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 25,
   },
   addReminderButton: {
     width: 25,
@@ -287,12 +290,12 @@ export default class Main extends Component {
   render() {
     const { reminders, scopedContacts, contactSearchVisible } = this.state;
     return (
-      <View>
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>KeepInTouch</Text>
-        </View>
-        <Image source={require('./img/circleIcon.png')} style={styles.logoStyle} />
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <View>
+          <View style={styles.banner}>
+            <Text style={styles.bannerText}>KeepInTouch</Text>
+          </View>
+          <Image source={require('./img/circleIcon.png')} style={styles.logoStyle} />
           <View style={styles.topActions}>
             <Button
               style={styles.addReminderButton}
@@ -301,6 +304,8 @@ export default class Main extends Component {
               onPress={() => this.setState({ contactSearchVisible: true })}
             />
           </View>
+        </View>
+        <ScrollView>
           <FlatList
             style={styles.listMargins}
             data={reminders}
@@ -313,37 +318,45 @@ export default class Main extends Component {
             )}
             keyExtractor={item => item.name}
           />
-          <Modal
-            animationType="fade"
-            transparent={false}
-            visible={contactSearchVisible}
-            onRequestClose={() => {
-              this.setState({ contactSearchVisible: false });
-            }}
-          >
-            <View style={styles.banner}>
-              <Text style={styles.bannerText}>KeepInTouch</Text>
-            </View>
-            <Image source={require('./img/circleIcon.png')} style={styles.logoStyle} />
-            <View style={styles.listMargins}>
-              <TextInput
-                onChangeText={searchtext => this.updateSearch(searchtext)}
-                placeholder="Search your contacts"
-              />
-              <FlatList
-                data={scopedContacts}
-                renderItem={({ item }) => (
-                  <ContactListItem
-                    name={item.name}
-                    phoneNumbers={item.phoneNumbers}
-                    id={this.getNewReminderId()}
-                    parentCallbackHandleContactPress={this.addReminder}
-                  />
-                )}
-              />
-            </View>
-          </Modal>
+        </ScrollView>
+        <View>
+          <AdMobBanner
+            style={styles.adBanner}
+            adSize="smartBanner"
+            adUnitID="ca-app-pub-5788032504032701/7284967342"
+            onAdFailedToLoad={error => rollbar.log(`Error with Ad failing to load ${error}.`)}
+          />
         </View>
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={contactSearchVisible}
+          onRequestClose={() => {
+            this.setState({ contactSearchVisible: false });
+          }}
+        >
+          <View style={styles.banner}>
+            <Text style={styles.bannerText}>KeepInTouch</Text>
+          </View>
+          <Image source={require('./img/circleIcon.png')} style={styles.logoStyle} />
+          <View style={styles.listMargins}>
+            <TextInput
+              onChangeText={searchtext => this.updateSearch(searchtext)}
+              placeholder="Search your contacts"
+            />
+            <FlatList
+              data={scopedContacts}
+              renderItem={({ item }) => (
+                <ContactListItem
+                  name={item.name}
+                  phoneNumbers={item.phoneNumbers}
+                  id={this.getNewReminderId()}
+                  parentCallbackHandleContactPress={this.addReminder}
+                />
+              )}
+            />
+          </View>
+        </Modal>
       </View>
     );
   }

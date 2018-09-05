@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-admob')
     compile project(':react-native-splash-screen')
     compile project(':rollbar-react-native')
     compile project(':react-native-push-notification')

@@ -41,6 +41,7 @@
 		D639519E8AD04BAE87CEC9E2 /* libSendSMS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D416761D0A2F43A6BC5FBFF3 /* libSendSMS.a */; };
 		DF12917516E748B49D59D68E /* libRollbarReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5593A10DB1A4C51B07B2169 /* libRollbarReactNative.a */; };
 		7EE5672299404547B3CB18DC /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3E7AE2BE46A418991E08831 /* libSplashScreen.a */; };
+		11EE0E1838A24F9F997C0BA6 /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DA7D566631B42AC9DBDCD8D /* libRNAdMobManager.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -354,6 +355,8 @@
 		F5593A10DB1A4C51B07B2169 /* libRollbarReactNative.a */ = {isa = PBXFileReference; name = "libRollbarReactNative.a"; path = "libRollbarReactNative.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C0D7A2B5B73043C390C4C291 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		E3E7AE2BE46A418991E08831 /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		BB2B9873A2DE40C58E83C26F /* RNAdMobManager.xcodeproj */ = {isa = PBXFileReference; name = "RNAdMobManager.xcodeproj"; path = "../node_modules/react-native-admob/ios/RNAdMobManager.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		9DA7D566631B42AC9DBDCD8D /* libRNAdMobManager.a */ = {isa = PBXFileReference; name = "libRNAdMobManager.a"; path = "libRNAdMobManager.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -386,6 +389,7 @@
 				D639519E8AD04BAE87CEC9E2 /* libSendSMS.a in Frameworks */,
 				DF12917516E748B49D59D68E /* libRollbarReactNative.a in Frameworks */,
 				7EE5672299404547B3CB18DC /* libSplashScreen.a in Frameworks */,
+				11EE0E1838A24F9F997C0BA6 /* libRNAdMobManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,6 +580,7 @@
 				71371E07FAB54263BE1E3A0E /* SendSMS.xcodeproj */,
 				75C704074F8E4A0E94C1C2DB /* RollbarReactNative.xcodeproj */,
 				C0D7A2B5B73043C390C4C291 /* SplashScreen.xcodeproj */,
+				BB2B9873A2DE40C58E83C26F /* RNAdMobManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1206,6 +1211,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1213,6 +1219,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Debug;
@@ -1237,6 +1244,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1244,6 +1252,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Release;
@@ -1269,6 +1278,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Debug;
@@ -1293,6 +1303,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Release;
@@ -1326,6 +1337,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1333,6 +1345,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Debug;
@@ -1366,6 +1379,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1373,6 +1387,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Release;
@@ -1405,6 +1420,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1412,6 +1428,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Debug;
@@ -1444,6 +1461,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1451,6 +1469,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sms/SendSMS",
 					"$(SRCROOT)/../node_modules/rollbar-react-native/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-splash-screen/ios",
+					"$(SRCROOT)/../node_modules/react-native-admob/ios",
 				);
 			};
 			name = Release;
