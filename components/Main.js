@@ -11,6 +11,7 @@ import {
   Image,
   Text,
   PermissionsAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import Contacts from 'react-native-contacts';
 import PushNotification from 'react-native-push-notification';
@@ -60,6 +61,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 24,
     fontFamily: 'Helvetica',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalSearch: {
+    width: 200,
+  },
+  modalBack: {
+    marginTop: 15,
   },
 });
 
@@ -326,10 +337,19 @@ export default class Main extends Component {
             </View>
             <Image source={require('./img/circleIcon.png')} style={styles.logoStyle} />
             <View style={styles.listMargins}>
-              <TextInput
-                onChangeText={searchtext => this.updateSearch(searchtext)}
-                placeholder="Search your contacts"
-              />
+              <View style={styles.modalActions}>
+                <TextInput
+                  style={styles.modalSearch}
+                  onChangeText={searchtext => this.updateSearch(searchtext)}
+                  placeholder="Search your contacts"
+                />
+                <TouchableOpacity
+                  style={styles.modalBack}
+                  onPress={() => this.setState({ contactSearchVisible: false })}
+                >
+                  <Text>Done</Text>
+                </TouchableOpacity>
+              </View>
               <FlatList
                 data={scopedContacts}
                 renderItem={({ item }) => (
