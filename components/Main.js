@@ -269,17 +269,25 @@ export default class Main extends Component {
   }
 
   async retrieveReminders() {
-    const storedReminders = await AsyncStorage.getItem('reminders');
-    let reminders = JSON.parse(storedReminders);
-    if (reminders == null) reminders = [];
-    this.setState({ reminders });
+    try {
+      const storedReminders = await AsyncStorage.getItem('reminders');
+      let reminders = JSON.parse(storedReminders);
+      if (reminders == null) reminders = [];
+      this.setState({ reminders });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async saveReminderData(updatedReminders) {
-    // update stored data
-    await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
-    // update state
-    this.setState({ reminders: updatedReminders });
+    try {
+      // update stored data
+      await AsyncStorage.setItem('reminders', JSON.stringify(updatedReminders));
+      // update state
+      this.setState({ reminders: updatedReminders });
+    } catch (error) {
+      throw error;
+    }
   }
 
   /* TESTING ONLY */
