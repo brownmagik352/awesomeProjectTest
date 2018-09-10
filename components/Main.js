@@ -80,53 +80,36 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    const allPermissions = [
-      PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      PermissionsAndroid.PERMISSIONS.SEND_SMS,
-      PermissionsAndroid.PERMISSIONS.CALL_PHONE,
-    ];
-    PermissionsAndroid.requestMultiple(allPermissions)
-      .then(() => {
-        if (Main.allPermsGranted(allPermissions)) {
-          // get contacts list
-          Contacts.getAll((err, contacts) => {
-            if (err) {
-              rollbar.log(`Error getting contacts (${err})`);
-              Alert.alert(
-                `Couldn't load your contacts. You won't be able to create new reminders.\nPlease allow KeepInTouch to access your contacts.`
-              );
-            }
+    // check for contact permissions before letting the user advance
+    const contactPerms = PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS);
 
-            this.contactsListPrep(contacts);
-          });
-
-          // get stored reminders
-          this.retrieveReminders().catch(error => {
-            Alert.alert('Error loading saved reminders');
-            rollbar.log(`Error loading saved reminders (${error})`);
-          });
-
-          SplashScreen.hide();
-        } else {
-          rollbar.log(`Not all permissions granted`);
-          Alert.alert(`You must allow all permissions to use the app.`);
-        }
-      })
-      .catch(error => {
-        rollbar.log(`Error getting contacts (${error})`);
-        Alert.alert(
-          `Error with permissions. Please go to settings to grant necessary permissions for this app.`
-        );
-      });
+    if (contactPerms === PermissionsAndroid.RESULTS.GRANTED) {
+      // permission granted, proceed
+      this.loadContactsAndReminders();
+    } else if (contactPerms === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      // permission permanently denied
+      Main.alertForContactPermsDenied();
+    } else {
+      // ask for permission
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS)
+        .then(result => {
+          if (result === PermissionsAndroid.RESULTS.GRANTED) {
+            // permissiong granted, proceed
+            this.loadContactsAndReminders();
+          } else {
+            // permission denied
+            Main.alertForContactPermsDenied();
+          }
+        })
+        .catch(error => {
+          Main.alertForContactPermsDenied();
+          rollbar.log(`Error getting contact permissions (${error})`);
+        });
+    }
   }
 
-  static allPermsGranted(perms) {
-    for (let i = 0; i < perms.length; i += 1) {
-      if (PermissionsAndroid.check(perms[i]) === PermissionsAndroid.RESULTS.DENIED) return false;
-    }
-    return true;
+  static alertForContactPermsDenied() {
+    Alert.alert(`Grant Contacts Permissions in your settings for KeepInTouch.`);
   }
 
   // TODO: handle getting name in all cases (names missing etc.)
@@ -265,6 +248,25 @@ export default class Main extends Component {
         });
     }
   };
+
+  loadContactsAndReminders() {
+    // get contacts list
+    Contacts.getAll((err, contacts) => {
+      if (err) {
+        rollbar.log(`Error getting contacts (${err})`);
+        Alert.alert(
+          `Couldn't load your contacts. You won't be able to create new reminders.\nPlease allow KeepInTouch to access your contacts.`
+        );
+      }
+      this.contactsListPrep(contacts);
+    });
+    // get stored reminders
+    this.retrieveReminders().catch(error => {
+      Alert.alert('Error loading saved reminders');
+      rollbar.log(`Error loading saved reminders (${error})`);
+    });
+    SplashScreen.hide();
+  }
 
   async retrieveReminders() {
     const storedReminders = await AsyncStorage.getItem('reminders');
