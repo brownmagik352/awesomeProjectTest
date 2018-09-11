@@ -33,3 +33,5 @@ export const sharedStyles = {
 };
 
 export const rollbarKey = 'fc49b7778b5e44d387ca4005cd43726d';
+
+export const freeVersion = true;

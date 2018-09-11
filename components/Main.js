@@ -23,6 +23,7 @@ import {
   mapStartDateStringToStartDateDate,
   rollbarKey,
   sharedStyles,
+  freeVersion,
 } from '../constants';
 import ContactListItem from './ContactListItem';
 import Reminder from './Reminder';
@@ -297,6 +298,16 @@ export default class Main extends Component {
     this.setState({ reminders: [] });
   }
 
+  // free version limits
+  reminderButtonPressed() {
+    const { reminders } = this.state;
+    if (freeVersion && reminders.length >= 5) {
+      Alert.alert('Please upgrade to KeepInTouch Pro (Max Reminders Set).');
+    } else {
+      this.setState({ contactSearchVisible: true });
+    }
+  }
+
   render() {
     const { reminders, scopedContacts, contactSearchVisible } = this.state;
     return (
@@ -311,7 +322,7 @@ export default class Main extends Component {
               style={styles.addReminderButton}
               color={sharedStyles.actionButton.color}
               title="Add Reminder"
-              onPress={() => this.setState({ contactSearchVisible: true })}
+              onPress={() => this.reminderButtonPressed()}
             />
           </View>
         </View>
@@ -329,14 +340,16 @@ export default class Main extends Component {
             keyExtractor={item => item.name}
           />
         </ScrollView>
-        <View>
-          <AdMobBanner
-            style={styles.adBanner}
-            adSize="smartBanner"
-            adUnitID="ca-app-pub-5788032504032701/7284967342"
-            onAdFailedToLoad={error => rollbar.log(`Error with Ad failing to load ${error}.`)}
-          />
-        </View>
+        {freeVersion && (
+          <View>
+            <AdMobBanner
+              style={styles.adBanner}
+              adSize="smartBanner"
+              adUnitID="ca-app-pub-5788032504032701/7284967342"
+              onAdFailedToLoad={error => rollbar.log(`Error with Ad failing to load ${error}.`)}
+            />
+          </View>
+        )}
         <Modal
           animationType="fade"
           transparent={false}
